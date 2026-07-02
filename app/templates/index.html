@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block titre %}Accueil{% endblock %}
+
+{% block contenu %}
+<div class="p-5 text-center">
+    <h1>Bienvenue sur le projet de base Flask</h1>
+    <p class="lead">Structure minimale : config, models, forms, routes, templates.</p>
+    {% if not current_user.is_authenticated %}
+        <a href="{{ url_for('main.inscription') }}" class="btn btn-primary">Créer un compte</a>
+    {% endif %}
+</div>
+{% endblock %}

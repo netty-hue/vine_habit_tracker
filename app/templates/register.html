@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block titre %}Inscription{% endblock %}
+
+{% block contenu %}
+<div class="col-md-6 mx-auto">
+    <h2 class="mb-4">Créer un compte</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            {{ form.nom.label(class="form-label") }}
+            {{ form.nom(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.mot_de_passe.label(class="form-label") }}
+            {{ form.mot_de_passe(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.confirmation.label(class="form-label") }}
+            {{ form.confirmation(class="form-control") }}
+        </div>
+
+        {{ form.submit(class="btn btn-primary") }}
+    </form>
+</div>
+{% endblock %}
