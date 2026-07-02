@@ -1,47 +1,129 @@
-from datetime import datetime
+
+from .extensions import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
-from app import db, login_manager
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    """Indique à Flask-Login comment retrouver un utilisateur à partir de son id."""
-    return User.query.get(int(user_id))
-
-
-class User(UserMixin, db.Model):
-    """Table des utilisateurs."""
+class User(db.Model, UserMixin):
+    __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    nom = db.Column(db.String(80), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    mot_de_passe_hash = db.Column(db.String(255), nullable=False)
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
 
-    # Un utilisateur peut avoir plusieurs tâches (relation 1-N)
-    taches = db.relationship("Tache", backref="auteur", lazy=True)
+    score_assiduite = db.Column(db.Integer, default=0)
 
-    def set_password(self, mot_de_passe):
-        self.mot_de_passe_hash = generate_password_hash(mot_de_passe)
+    #Relations
+    goals = db.relationship(
+        'Goal',
+        backref='user',
+        lazy=True,
+        cascade="all, delete-orphan"
+    )
 
-    def check_password(self, mot_de_passe):
-        return check_password_hash(self.mot_de_passe_hash, mot_de_passe)
+    habits = db.relationship(
+        'Habit',
+        backref='User',
+        lazt=True,
+        cascade="all, delete-orphan"
+    )
 
-    def __repr__(self):
-        return f"<User {self.email}>"
+    todos = db.relationship(
+        'TodoItem',
+        backref='user',
+        lazy=True,
+        cascade="all, delete-orphan"   
+    )
 
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
 
-class Tache(db.Model):
-    """Exemple simple d'entité liée à un utilisateur (CRUD basique)."""
+    def chech_password(self, password):
+        return check_password_hash(self.password_hash, password)
+    
+
+class Goal(db.Model):
+    __tablename__ = 'goals'
 
     id = db.Column(db.Integer, primary_key=True)
-    titre = db.Column(db.String(140), nullable=False)
-    terminee = db.Column(db.Boolean, default=False)
-    date_creation = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    
+    title = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.String(500))
 
-    # Clé étrangère vers l'utilisateur propriétaire de la tâche
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    def __repr__(self):
-        return f"<Tache {self.titre}>"
+    habits = db.relationship(
+        'Habit',
+        backref='goal',
+        lazy=True,
+        cascade="all, delete-orphan"
+    )
+
+class Habit(db.Model):
+    __tablename__ = 'habits'
+
+    id = db.Column(db.Integer, primari_key=True)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    goal_id = db.Column(db.Integer, db.ForeignKey('goals.id'), nullable=False)
+
+    title = db.Column(db.String(150), nullable=False)
+    why = db.Column(db.String(500))
+
+    expected_result = db.Column(db.String(500))
+
+    schedule_days = db.Column(db.String(100))
+    schedule_time = db.Column(db.String(100))
+
+    duration = db.Column(db.Integer) ## en minutes
+
+    max_streak = db.Column(db.Integer, default=0)
+    current_streak = db.Column(db.Integer, default=0)
+
+    logs = db.relationship(
+        'HabitLog',
+        backref='habit',
+        lazy=True,
+        cascade="all, delete-orphan"
+    )
+
+
+class HabitLog(db.Model):
+    __tablename__ = 'habit_logs'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    habit_id = db.Column(
+        db.Integer,
+        db.ForeignKey('habits.id'),
+        nullable=False
+    )
+
+    date_completed = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
+
+
+class TodoItem(db.Model):
+    __tablename__ = 'todo_items'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id'),
+        nullable=False
+    )
+
+    title = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.String(500))
+
+    is_completed = db.Column(db.Boolean, default=False)
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )

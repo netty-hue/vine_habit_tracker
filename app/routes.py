@@ -59,18 +59,18 @@ def logout():
 
 # ---------- EXEMPLE CRUD (Tâches) ----------
 
-@main.route("/dashboard", methods=["GET", "POST"])
+@main.route("/goal", methods=["GET", "POST"])
 @login_required
-def dashboard():
+def goal():
     form = TacheForm()
     if form.validate_on_submit():
         nouvelle_tache = Tache(titre=form.titre.data, user_id=current_user.id)
         db.session.add(nouvelle_tache)
         db.session.commit()
-        return redirect(url_for("main.dashboard"))
+        return redirect(url_for("main.goal"))
 
     taches = Tache.query.filter_by(user_id=current_user.id).all()
-    return render_template("dashboard.html", form=form, taches=taches)
+    return render_template("goal.html", form=form, taches=taches)
 
 
 @main.route("/tache/<int:tache_id>/terminer")
@@ -80,7 +80,7 @@ def terminer_tache(tache_id):
     if tache.user_id == current_user.id:
         tache.terminee = not tache.terminee
         db.session.commit()
-    return redirect(url_for("main.dashboard"))
+    return redirect(url_for("main.goal"))
 
 
 @main.route("/tache/<int:tache_id>/supprimer")
@@ -90,4 +90,5 @@ def supprimer_tache(tache_id):
     if tache.user_id == current_user.id:
         db.session.delete(tache)
         db.session.commit()
-    return redirect(url_for("main.dashboard"))
+    return redirect(url_for("main.goal"))
+
