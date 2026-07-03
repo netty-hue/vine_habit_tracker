@@ -2,11 +2,169 @@
 {% block titre %}Accueil{% endblock %}
 
 {% block contenu %}
-<div class="p-5 text-center">
-    <h1>Bienvenue sur le projet de base Flask</h1>
-    <p class="lead">Structure minimale : config, models, forms, routes, templates.</p>
-    {% if not current_user.is_authenticated %}
-        <a href="{{ url_for('main.inscription') }}" class="btn btn-primary">Créer un compte</a>
-    {% endif %}
+
+<div class="container d-flex justify-content-center align-items-center py-5">
+
+    <div class="card shadow-lg rounded-4 overflow-hidden" style="max-width: 500px; width:100%; height:700px;">
+
+        <div id="carouselAccueil" class="carousel slide h-100" data-bs-ride="false">
+
+            <!-- Indicateurs -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselAccueil" data-bs-slide-to="0" class="active"></button>
+                <button type="button" data-bs-target="#carouselAccueil" data-bs-slide-to="1"></button>
+                <button type="button" data-bs-target="#carouselAccueil" data-bs-slide-to="2"></button>
+                <button type="button" data-bs-target="#carouselAccueil" data-bs-slide-to="3"></button>
+            </div>
+
+            <div class="carousel-inner h-100">
+
+                <!-- PAGE 1 -->
+                <div class="carousel-item active h-100">
+
+                    <div class="d-flex flex-column justify-content-between align-items-center h-100 text-center p-4">
+
+                        <div>
+                            <img src="{{ url_for('static', filename='images/Vine habit.png') }}"
+                                 class="rounded-circle img-fluid"
+                                 style="width:170px;height:170px;object-fit:cover;">
+                        </div>
+
+                        <div>
+                            <h2 class="text-primary mb-4">
+                                Welcome To <br>
+                                Vine Habit Tracker
+                            </h2>
+
+                            <p class="lead">
+                                Get ready to transform your life one habit
+                                at a time with Vine.
+                            </p>
+                        </div>
+
+                        {% if not current_user.is_authenticated %}
+                        <a href="{{ url_for('main.inscription') }}"
+                           class="btn btn-primary btn-lg">
+                            Créer un compte
+                        </a>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                <!-- PAGE 2 -->
+                <div class="carousel-item h-100">
+
+                    <div class="d-flex flex-column justify-content-between align-items-center h-100 text-center p-4">
+
+                        <img src="{{ url_for('static', filename='images/routine.jpeg') }}"
+                             class="rounded-circle img-fluid"
+                             style="width:170px;height:170px;object-fit:cover;">
+
+                        <div>
+
+                            <h2 class="text-primary mb-4">
+                                Your Ideal Schedules
+                            </h2>
+
+                            <p class="lead">
+                                Discover the power of consistency as you
+                                build a better daily routine with your
+                                goals and aspirations.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- PAGE 3 -->
+                <div class="carousel-item h-100">
+
+                    <div class="d-flex flex-column justify-content-between align-items-center h-100 text-center p-4">
+
+                        <img src="{{ url_for('static', filename='images/checklist.jpeg') }}"
+                             class="rounded-circle img-fluid"
+                             style="width:170px;height:170px;object-fit:cover;">
+
+                        <div>
+
+                            <h2 class="text-primary mb-4">
+                                Seize the Potential of Every Day
+                            </h2>
+
+                            <p class="lead">
+                                Learn how to make each day count by tracking
+                                and improving your habits to achieve your
+                                dreams.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- PAGE 4 -->
+                <div class="carousel-item h-100">
+
+                    <div class="d-flex flex-column justify-content-between align-items-center h-100 text-center p-4">
+
+                        <img src="{{ url_for('static', filename='images/success.jpeg') }}"
+                             class="rounded-circle img-fluid"
+                             style="width:170px;height:170px;object-fit:cover;">
+
+                        <div>
+
+                            <h2 class="text-primary mb-4">
+                                Maintain Your Motivation
+                            </h2>
+
+                            <p class="lead">
+                                Stay motivated and on track with your habits
+                                using progress views and statistics.
+                            </p>
+
+                        </div>
+
+                        {% if not current_user.is_authenticated %}
+                        <a href="{{ url_for('main.inscription') }}"
+                           class="btn btn-success btn-lg">
+                            Commencer
+                        </a>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Flèches -->
+            <button class="carousel-control-prev"
+                    type="button"
+                    data-bs-target="#carouselAccueil"
+                    data-bs-slide="prev">
+
+                <span class="carousel-control-prev-icon"></span>
+
+            </button>
+
+            <button class="carousel-control-next"
+                    type="button"
+                    data-bs-target="#carouselAccueil"
+                    data-bs-slide="next">
+
+                <span class="carousel-control-next-icon"></span>
+
+            </button>
+
+        </div>
+
+    </div>
+
 </div>
+
 {% endblock %}
