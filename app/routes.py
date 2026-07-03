@@ -1,30 +1,26 @@
-from flask import Blueprint, render_template, redirect, url_for, flash
+from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 
 from app import db
-from app.models import User, Tache
+from app.models import User, TodoItem, Goal, Habit
 from app.forms import InscriptionForm, ConnexionForm, TacheForm
 
 main = Blueprint("main", __name__)
 
-
 @main.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("acceuil/index.html")
 
-
-# ---------- AUTHENTIFICATION ----------
 
 @main.route("/inscription", methods=["GET", "POST"])
 def inscription():
     form = InscriptionForm()
     if form.validate_on_submit():
-        # Vérifie que l'email n'existe pas déjà
         if User.query.filter_by(email=form.email.data).first():
             flash("Cet email est déjà utilisé.", "danger")
             return redirect(url_for("main.inscription"))
 
-        utilisateur = User(nom=form.nom.data, email=form.email.data)
+        utilisateur = User(username=form.nom.data, email=form.email.data)
         utilisateur.set_password(form.mot_de_passe.data)
         db.session.add(utilisateur)
         db.session.commit()
@@ -32,7 +28,7 @@ def inscription():
         flash("Compte créé avec succès, vous pouvez vous connecter.", "success")
         return redirect(url_for("main.login"))
 
-    return render_template("register.html", form=form)
+    return render_template("connexion/register.html", form=form) 
 
 
 @main.route("/login", methods=["GET", "POST"])
@@ -47,7 +43,7 @@ def login():
 
         flash("Email ou mot de passe incorrect.", "danger")
 
-    return render_template("login.html", form=form)
+    return render_template("connexion/login.html", form=form)  
 
 
 @main.route("/logout")
@@ -57,28 +53,36 @@ def logout():
     return redirect(url_for("main.index"))
 
 
-# ---------- EXEMPLE CRUD (Tâches) ----------
+# ---------- DASHBOARD ----------
+
+@main.route("/dashboard")
+@login_required
+def dashboard():
+    return render_template("data/dashboard.html") 
+
+
+# ---------- TÂCHES ----------
 
 @main.route("/goal", methods=["GET", "POST"])
 @login_required
 def goal():
     form = TacheForm()
     if form.validate_on_submit():
-        nouvelle_tache = Tache(titre=form.titre.data, user_id=current_user.id)
+        nouvelle_tache = TodoItem(title=form.titre.data, user_id=current_user.id)
         db.session.add(nouvelle_tache)
         db.session.commit()
         return redirect(url_for("main.goal"))
 
-    taches = Tache.query.filter_by(user_id=current_user.id).all()
-    return render_template("goal.html", form=form, taches=taches)
+    taches = TodoItem.query.filter_by(user_id=current_user.id).all()
+    return render_template("data/goal.html", form=form, taches=taches)  
 
 
 @main.route("/tache/<int:tache_id>/terminer")
 @login_required
 def terminer_tache(tache_id):
-    tache = Tache.query.get_or_404(tache_id)
+    tache = TodoItem.query.get_or_404(tache_id)
     if tache.user_id == current_user.id:
-        tache.terminee = not tache.terminee
+        tache.is_completed = not tache.is_completed
         db.session.commit()
     return redirect(url_for("main.goal"))
 
@@ -86,9 +90,18 @@ def terminer_tache(tache_id):
 @main.route("/tache/<int:tache_id>/supprimer")
 @login_required
 def supprimer_tache(tache_id):
-    tache = Tache.query.get_or_404(tache_id)
+    tache = TodoItem.query.get_or_404(tache_id)
     if tache.user_id == current_user.id:
         db.session.delete(tache)
         db.session.commit()
     return redirect(url_for("main.goal"))
 
+
+# ---------- PARAMÈTRES ----------
+
+@main.route('/settings', methods=['GET', 'POST'])
+def settings():
+    if request.method == 'POST':
+        flash("Paramètres enregistrés avec succès.")
+        return redirect(url_for('main.settings'))
+    return render_template('settings.html')
