@@ -1,33 +1,62 @@
-{% extends "base.html" %}
-{% block titre %}Inscription{% endblock %}
+<!DOCTYPE html>
+<html lang="fr">
 
-{% block contenu %}
-<div class="col-md-6 mx-auto">
-    <h2 class="mb-4">Créer un compte</h2>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-violet-100 via-purple-200 to-purple-400 min-h-screen flex items-center justify-center">
+
+<div class="bg-white shadow-2xl rounded-3xl w-full max-w-md p-10">
+
+    <h1 class="text-4xl font-bold text-purple-700 text-center mb-2">
+        Créer un compte
+    </h1>
+
+    <p class="text-center text-gray-500 mb-8">
+        Bienvenue sur Vine Habit Tracker
+    </p>
+
     <form method="POST">
+
         {{ form.hidden_tag() }}
 
-        <div class="mb-3">
-            {{ form.nom.label(class="form-label") }}
-            {{ form.nom(class="form-control") }}
+        <div class="mb-5">
+            {{ form.nom.label(class="block mb-2 font-semibold") }}
+            {{ form.nom(class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none") }}
         </div>
 
-        <div class="mb-3">
-            {{ form.email.label(class="form-label") }}
-            {{ form.email(class="form-control") }}
+        <div class="mb-5">
+            {{ form.email.label(class="block mb-2 font-semibold") }}
+            {{ form.email(class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none") }}
         </div>
 
-        <div class="mb-3">
-            {{ form.mot_de_passe.label(class="form-label") }}
-            {{ form.mot_de_passe(class="form-control") }}
+        <div class="mb-5">
+            {{ form.mot_de_passe.label(class="block mb-2 font-semibold") }}
+            {{ form.mot_de_passe(class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none") }}
         </div>
 
-        <div class="mb-3">
-            {{ form.confirmation.label(class="form-label") }}
-            {{ form.confirmation(class="form-control") }}
+        <div class="mb-6">
+            {{ form.confirmation.label(class="block mb-2 font-semibold") }}
+            {{ form.confirmation(class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none") }}
         </div>
 
-        {{ form.submit(class="btn btn-primary") }}
+        {{ form.submit(class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-semibold transition") }}
+
     </form>
+
+    <p class="text-center mt-6 text-gray-600">
+        Déjà un compte ?
+        <a href="{{ url_for('main.login') }}" class="text-purple-700 font-bold hover:underline">
+            Se connecter
+        </a>
+    </p>
+
 </div>
-{% endblock %}
+
+</body>
+</html>

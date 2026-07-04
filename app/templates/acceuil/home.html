@@ -1,2 +1,198 @@
 {% extends "base.html" %}
+
 {% block titre %}Accueil{% endblock %}
+
+{% block content %}
+
+<div class="bg-purple-50 rounded-3xl p-6 h-full">
+
+    <!-- En-tête -->
+
+    <div>
+
+        <h1 class="text-4xl font-bold text-purple-800">
+
+            Bonjour {{ current_user.username }} 👋
+
+        </h1>
+
+        <p class="text-gray-500 mt-2">
+
+            Continue à construire de bonnes habitudes chaque jour.
+
+        </p>
+
+    </div>
+
+    <!-- Cartes -->
+
+    <div class="grid grid-cols-3 gap-6 mt-8">
+
+        <div class="bg-white rounded-3xl shadow-lg p-6">
+
+            <h3 class="text-gray-500">
+
+                Habitudes créées
+
+            </h3>
+
+            <h1 class="text-5xl font-bold text-purple-700 mt-3">
+
+                {{ total_habits }}
+
+            </h1>
+
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-lg p-6">
+
+            <h3 class="text-gray-500">
+
+                Terminées aujourd'hui
+
+            </h3>
+
+            <h1 class="text-5xl font-bold text-green-500 mt-3">
+
+                {{ completed_today }}
+
+            </h1>
+
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-lg p-6">
+
+            <h3 class="text-gray-500">
+
+                Streak actuel
+
+            </h3>
+
+            <h1 class="text-5xl font-bold text-orange-500 mt-3">
+
+                {{ streak }} 🔥
+
+            </h1>
+
+        </div>
+
+    </div>
+
+    <!-- Calendrier -->
+
+    <div class="mt-8">
+
+        <div class="flex justify-between items-center mb-4">
+
+            <h2 class="text-3xl font-bold text-purple-800">
+
+                Calendrier
+
+            </h2>
+
+            <a href="{{ url_for('main.goal') }}"
+               class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl shadow-lg">
+
+                + Ajouter des tâches
+
+            </a>
+
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-xl p-5 inline-block">
+
+            <div id="calendar"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+#calendar{
+
+    width:380px;
+
+}
+
+.fc{
+
+    font-size:.75rem;
+
+}
+
+.fc .fc-toolbar-title{
+
+    font-size:1rem;
+    color:#6B21A8;
+    font-weight:bold;
+
+}
+
+.fc .fc-button{
+
+    background:#7C3AED !important;
+    border:none !important;
+    border-radius:8px !important;
+    font-size:.70rem !important;
+    padding:4px 8px !important;
+
+}
+
+.fc .fc-button:hover{
+
+    background:#6D28D9 !important;
+
+}
+
+.fc-daygrid-day-number{
+
+    font-size:.75rem;
+
+}
+
+.fc .fc-scrollgrid{
+
+    border-radius:12px;
+
+}
+
+</style>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    let calendarEl = document.getElementById("calendar");
+
+    let calendar = new FullCalendar.Calendar(calendarEl, {
+
+        initialView: "dayGridMonth",
+
+        locale: "fr",
+
+        height: 280,
+
+        headerToolbar: {
+
+            left: "prev,next",
+
+            center: "title",
+
+            right: ""
+
+        },
+
+        events: []
+
+    });
+
+    calendar.render();
+
+});
+
+</script>
+
+{% endblock %}
