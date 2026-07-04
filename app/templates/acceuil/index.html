@@ -1,170 +1,185 @@
-{% extends "base.html" %}
-{% block titre %}Accueil{% endblock %}
+<!DOCTYPE html>
+<html lang="fr">
 
-{% block contenu %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<div class="container d-flex justify-content-center align-items-center py-5">
+    <script src="https://cdn.tailwindcss.com"></script>
 
-    <div class="card shadow-lg rounded-4 overflow-hidden" style="max-width: 500px; width:100%; height:700px;">
+    <title>My Habits Onboarding</title>
 
-        <div id="carouselAccueil" class="carousel slide h-100" data-bs-ride="false">
+    <style>
+        .slider {
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
 
-            <!-- Indicateurs -->
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselAccueil" data-bs-slide-to="0" class="active"></button>
-                <button type="button" data-bs-target="#carouselAccueil" data-bs-slide-to="1"></button>
-                <button type="button" data-bs-target="#carouselAccueil" data-bs-slide-to="2"></button>
-                <button type="button" data-bs-target="#carouselAccueil" data-bs-slide-to="3"></button>
+        .slider::-webkit-scrollbar {
+            display: none;
+        }
+
+        .slide {
+            scroll-snap-align: start;
+        }
+    </style>
+</head>
+
+<body class="bg-purple-200 h-screen overflow-hidden flex items-center justify-center p-3">
+
+    <div class="w-full max-w-md h-[70vh] bg-gray-200 rounded-3xl shadow-xl overflow-hidden">
+
+        <!-- SLIDER -->
+        <div id="slider" class="slider flex overflow-x-auto h-full">
+
+            <!-- PAGE 1 -->
+            <div class="slide min-w-full h-full flex flex-col items-center justify-between py-8 px-6">
+
+                <div class="w-40 h-40 rounded-full bg-white/20 overflow-hidden">
+                    <img src="{{ url_for('static', filename='static/images/Vine habit.png') }}" alt="Logo"
+                        class="w-full h-full object-cover">
+                </div>
+
+                <div class="text-center">
+                    <h2 class="text-3xl text-blue-900 font-medium mb-5">
+                        Welcome To<br>
+                        Vine Habit-Tracker
+                    </h2>
+
+                    <p class="text-xl leading-relaxed">
+                        Get ready to transform your life one habit at a
+                        time with Vine.
+                    </p>
+                </div>
+
+                <div class="dots flex gap-4">
+                    <span class="dot w-6 h-4 rounded-full bg-blue-700"></span>
+                    <span class="dot w-6 h-4 rounded-full bg-gray-400"></span>
+                    <span class="dot w-6 h-4 rounded-full bg-gray-400"></span>
+                    <span class="dot w-6 h-4 rounded-full bg-gray-400"></span>
+                </div>
             </div>
 
-            <div class="carousel-inner h-100">
+            <!-- PAGE 2 -->
+            <div class="slide min-w-full h-full flex flex-col items-center justify-between py-8 px-6">
 
-                <!-- PAGE 1 -->
-                <div class="carousel-item active h-100">
-
-                    <div class="d-flex flex-column justify-content-between align-items-center h-100 text-center p-4">
-
-                        <div>
-                            <img src="{{ url_for('static', filename='images/Vine habit.png') }}"
-                                 class="rounded-circle img-fluid"
-                                 style="width:170px;height:170px;object-fit:cover;">
-                        </div>
-
-                        <div>
-                            <h2 class="text-primary mb-4">
-                                Welcome To <br>
-                                Vine Habit Tracker
-                            </h2>
-
-                            <p class="lead">
-                                Get ready to transform your life one habit
-                                at a time with Vine.
-                            </p>
-                        </div>
-
-                        {% if not current_user.is_authenticated %}
-                        <a href="{{ url_for('main.inscription') }}"
-                           class="btn btn-primary btn-lg">
-                            Créer un compte
-                        </a>
-                        {% endif %}
-
-                    </div>
-
+                <div class="w-40 h-40 rounded-full bg-white/20 overflow-hidden">
+                    <img src="app\static\image\routine.jpeg" alt="Routine"
+                        class="w-full h-full object-cover">
                 </div>
 
-                <!-- PAGE 2 -->
-                <div class="carousel-item h-100">
+                <div class="text-center">
+                    <h2 class="text-3xl text-blue-900 font-medium mb-5">
+                        Your Ideal Schedules
+                    </h2>
 
-                    <div class="d-flex flex-column justify-content-between align-items-center h-100 text-center p-4">
-
-                        <img src="{{ url_for('static', filename='images/routine.jpeg') }}"
-                             class="rounded-circle img-fluid"
-                             style="width:170px;height:170px;object-fit:cover;">
-
-                        <div>
-
-                            <h2 class="text-primary mb-4">
-                                Your Ideal Schedules
-                            </h2>
-
-                            <p class="lead">
-                                Discover the power of consistency as you
-                                build a better daily routine with your
-                                goals and aspirations.
-                            </p>
-
-                        </div>
-
-                    </div>
-
+                    <p class="text-xl leading-relaxed">
+                        Discover the power of consistency as you build a
+                        better daily routine with your goals and aspirations
+                    </p>
                 </div>
 
-                <!-- PAGE 3 -->
-                <div class="carousel-item h-100">
+                <div class="dots flex gap-4">
+                    <span class="dot w-6 h-4 rounded-full bg-gray-400"></span>
+                    <span class="dot w-6 h-4 rounded-full bg-blue-700"></span>
+                    <span class="dot w-6 h-4 rounded-full bg-gray-400"></span>
+                    <span class="dot w-6 h-4 rounded-full bg-gray-400"></span>
+                </div>
+            </div>
 
-                    <div class="d-flex flex-column justify-content-between align-items-center h-100 text-center p-4">
+            <!-- PAGE 3 -->
+            <div class="slide min-w-full h-full flex flex-col items-center justify-between py-8 px-6">
 
-                        <img src="{{ url_for('static', filename='images/checklist.jpeg') }}"
-                             class="rounded-circle img-fluid"
-                             style="width:170px;height:170px;object-fit:cover;">
-
-                        <div>
-
-                            <h2 class="text-primary mb-4">
-                                Seize the Potential of Every Day
-                            </h2>
-
-                            <p class="lead">
-                                Learn how to make each day count by tracking
-                                and improving your habits to achieve your
-                                dreams.
-                            </p>
-
-                        </div>
-
-                    </div>
-
+                <div class="w-40 h-40 rounded-full bg-white/20 overflow-hidden">
+                    <img src="{{ url_for('static', filename='static/images/checklist.jpeg') }}" alt="Checklist"
+                        class="w-full h-full object-cover">
                 </div>
 
-                <!-- PAGE 4 -->
-                <div class="carousel-item h-100">
+                <div class="text-center">
+                    <h2 class="text-3xl text-blue-900 font-medium mb-5">
+                        Seize the Potential of Every Day
+                    </h2>
 
-                    <div class="d-flex flex-column justify-content-between align-items-center h-100 text-center p-4">
+                    <p class="text-xl leading-relaxed">
+                        Learn how to make each day count by tracking and
+                        improving your habits to make progress and
+                        achieve your dreams.
+                    </p>
+                </div>
 
-                        <img src="{{ url_for('static', filename='images/success.jpeg') }}"
-                             class="rounded-circle img-fluid"
-                             style="width:170px;height:170px;object-fit:cover;">
+                <div class="dots flex gap-4">
+                    <span class="dot w-6 h-4 rounded-full bg-gray-400"></span>
+                    <span class="dot w-6 h-4 rounded-full bg-gray-400"></span>
+                    <span class="dot w-6 h-4 rounded-full bg-blue-700"></span>
+                    <span class="dot w-6 h-4 rounded-full bg-gray-400"></span>
+                </div>
+            </div>
 
-                        <div>
+            <!-- PAGE 4 -->
+            <div class="slide min-w-full h-full flex flex-col items-center justify-between py-8 px-6">
 
-                            <h2 class="text-primary mb-4">
-                                Maintain Your Motivation
-                            </h2>
+                <div class="w-40 h-80 rounded-full bg-white/20 overflow-hidden">
+                    <img src="{{ url_for('static', filename='static/images/success.jpeg') }}" alt="Success"
+                        class="w-full h-full object-cover">
+                </div>
 
-                            <p class="lead">
-                                Stay motivated and on track with your habits
-                                using progress views and statistics.
-                            </p>
+                <div class="text-center">
+                    <h2 class="text-3xl text-blue-900 font-medium mb-5">
+                        Maintain Your Motivation
+                    </h2>
 
-                        </div>
+                    <p class="text-xl leading-relaxed">
+                        Stay motivated and on track with your habits using
+                        the several progress views and statistics.
+                    </p>
+                </div>
 
-                        {% if not current_user.is_authenticated %}
-                        <a href="{{ url_for('main.inscription') }}"
-                           class="btn btn-success btn-lg">
-                            Commencer
-                        </a>
-                        {% endif %}
+                <div class="flex flex-col items-center gap-8">
 
+                    <div class="dots flex gap-4">
+                        <span class="dot w-6 h-4 rounded-full bg-gray-400"></span>
+                        <span class="dot w-6 h-4 rounded-full bg-gray-400"></span>
+                        <span class="dot w-6 h-4 rounded-full bg-gray-400"></span>
+                        <span class="dot w-6 h-4 rounded-full bg-blue-700"></span>
                     </div>
+
+                    <a href="{{ url_for('main.inscription') }}"
+                        class="px-10 py-4 bg-purple-500 hover:bg-purple-600 text-white font-semibold rounded-xl shadow-lg transition inline-block">
+                        S'inscrire
+                    </a>
 
                 </div>
 
             </div>
-
-            <!-- Flèches -->
-            <button class="carousel-control-prev"
-                    type="button"
-                    data-bs-target="#carouselAccueil"
-                    data-bs-slide="prev">
-
-                <span class="carousel-control-prev-icon"></span>
-
-            </button>
-
-            <button class="carousel-control-next"
-                    type="button"
-                    data-bs-target="#carouselAccueil"
-                    data-bs-slide="next">
-
-                <span class="carousel-control-next-icon"></span>
-
-            </button>
 
         </div>
 
     </div>
 
-</div>
+    <script>
+        const slider = document.getElementById("slider");
 
-{% endblock %}
+        slider.addEventListener("scroll", () => {
+            const index = Math.round(slider.scrollLeft / slider.clientWidth);
+
+            document.querySelectorAll(".dots").forEach(group => {
+
+                const dots = group.querySelectorAll(".dot");
+
+                dots.forEach(dot => {
+                    dot.classList.remove("bg-blue-700");
+                    dot.classList.add("bg-gray-400");
+                });
+
+                if (dots[index]) {
+                    dots[index].classList.remove("bg-gray-400");
+                    dots[index].classList.add("bg-blue-700");
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,23 +1,52 @@
-{% extends "base.html" %}
-{% block titre %}Connexion{% endblock %}
+<!DOCTYPE html>
+<html lang="fr">
 
-{% block contenu %}
-<div class="col-md-6 mx-auto">
-    <h2 class="mb-4">Se connecter</h2>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-violet-100 via-purple-200 to-purple-400 min-h-screen flex items-center justify-center">
+
+<div class="bg-white shadow-2xl rounded-3xl w-full max-w-md p-10">
+
+    <h1 class="text-4xl font-bold text-purple-700 text-center mb-2">
+        Connexion
+    </h1>
+
+    <p class="text-center text-gray-500 mb-8">
+        Heureux de vous revoir !
+    </p>
+
     <form method="POST">
+
         {{ form.hidden_tag() }}
 
-        <div class="mb-3">
-            {{ form.email.label(class="form-label") }}
-            {{ form.email(class="form-control") }}
+        <div class="mb-5">
+            {{ form.email.label(class="block mb-2 font-semibold") }}
+            {{ form.email(class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none") }}
         </div>
 
-        <div class="mb-3">
-            {{ form.mot_de_passe.label(class="form-label") }}
-            {{ form.mot_de_passe(class="form-control") }}
+        <div class="mb-6">
+            {{ form.mot_de_passe.label(class="block mb-2 font-semibold") }}
+            {{ form.mot_de_passe(class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none") }}
         </div>
 
-        {{ form.submit(class="btn btn-primary") }}
+        {{ form.submit(class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-semibold transition") }}
+
     </form>
+
+    <p class="text-center mt-6 text-gray-600">
+        Pas encore de compte ?
+        <a href="{{ url_for('main.inscription') }}" class="text-purple-700 font-bold hover:underline">
+            S'inscrire
+        </a>
+    </p>
+
 </div>
-{% endblock %}
+
+</body>
+</html>
