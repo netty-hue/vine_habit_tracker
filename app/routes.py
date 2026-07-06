@@ -15,7 +15,6 @@ def index():
     return render_template("acceuil/index.html")
 
 
-
 # ---------------- INSCRIPTION ----------------
 
 @main.route("/inscription", methods=["GET", "POST"])
@@ -39,7 +38,6 @@ def inscription():
         db.session.add(utilisateur)
         db.session.commit()
 
-        # connexion automatique
         login_user(utilisateur)
 
         flash("Compte créé avec succès.", "success")
@@ -159,11 +157,44 @@ def settings():
 
     if request.method == "POST":
 
-        flash("Paramètres enregistrés avec succès.")
+        username = request.form.get("username")
+        email = request.form.get("email")
+        password = request.form.get("password")
+        theme = request.form.get("theme")
+
+        # Mise à jour du nom
+        if username and username != current_user.username:
+            current_user.username = username
+
+        # Mise à jour de l'email
+        if email and email != current_user.email:
+
+            utilisateur = User.query.filter_by(email=email).first()
+
+            if utilisateur:
+                flash("Cet email est déjà utilisé.", "danger")
+                return redirect(url_for("main.settings"))
+
+            current_user.email = email
+
+        # Mot de passe
+        if password and password.strip():
+            current_user.set_password(password)
+
+        # Thème
+        if theme in ["light", "dark"]:
+            current_user.theme = theme
+
+        db.session.commit()
+
+        flash("Paramètres enregistrés avec succès.", "success")
 
         return redirect(url_for("main.settings"))
 
-    return render_template("data/settings.html")
+    return render_template("settings.html")
+
+
+# ---------------- HOME ----------------
 
 @main.route("/home")
 @login_required
@@ -177,7 +208,6 @@ def home():
 
     streak = 0
 
-    # Récupération des tâches pour le calendrier
     events = [
         {
             "title": t.title,

@@ -21,6 +21,9 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
 
+    ### gère le thème de l'application pour l'utilisateur (clair ou sombre)
+    theme = db.Column(db.String(20), default="light")
+
     # Streak général de l'utilisateur
     current_streak = db.Column(db.Integer, default=0)
 

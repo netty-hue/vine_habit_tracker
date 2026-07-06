@@ -1,2 +1,287 @@
 {% extends "base.html" %}
+
 {% block titre %}Paramètres{% endblock %}
+
+{% block content %}
+
+<div class="max-w-5xl mx-auto px-6 py-10">
+
+    <!-- Titre -->
+    <div class="mb-10">
+
+        <h1 class="text-4xl font-bold text-gray-800 flex items-center gap-3">
+
+            <iconify-icon
+                icon="heroicons:cog-6-tooth-20-solid"
+                class="text-indigo-600 text-4xl">
+            </iconify-icon>
+
+            Paramètres
+
+        </h1>
+
+        <p class="text-gray-500 mt-2">
+            Personnalisez votre expérience Vine Habit.
+        </p>
+
+    </div>
+
+    <form method="POST" class="space-y-8">
+
+        <!-- Compte -->
+        <div class="bg-white rounded-2xl shadow p-8">
+
+            <h2 class="flex items-center gap-2 text-xl font-semibold mb-6">
+
+                <iconify-icon
+                    icon="heroicons:user-circle-20-solid"
+                    class="text-indigo-500 text-2xl">
+                </iconify-icon>
+
+                Compte
+
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+
+                <div>
+
+                    <label class="block mb-2 text-sm font-medium">
+                        Nom d'utilisateur
+                    </label>
+
+                    <input
+                        type="text"
+                        value="{{ current_user.username }}"
+                        class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
+
+                </div>
+
+                <div>
+
+                    <label class="block mb-2 text-sm font-medium">
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        value="{{ current_user.email }}"
+                        class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
+
+                </div>
+
+            </div>
+
+            <div class="mt-6">
+
+                <label class="block mb-2 text-sm font-medium">
+
+                    Nouveau mot de passe
+
+                </label>
+
+                <input
+                    type="password"
+                    placeholder="********"
+                    class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
+
+            </div>
+
+        </div>
+
+        <!-- Notifications -->
+
+        <div class="bg-white rounded-2xl shadow p-8">
+
+            <h2 class="flex items-center gap-2 text-xl font-semibold mb-6">
+
+                <iconify-icon
+                    icon="heroicons:bell-alert-solid"
+                    class="text-yellow-500 text-2xl">
+                </iconify-icon>
+
+                Notifications
+
+            </h2>
+
+            <div class="space-y-6">
+
+                <label class="flex justify-between items-center">
+
+                    <span>Recevoir les rappels quotidiens</span>
+
+                    <input type="checkbox" class="toggle" checked>
+
+                </label>
+
+                <label class="flex justify-between items-center">
+
+                    <span>Recevoir les notifications par email</span>
+
+                    <input type="checkbox" class="toggle" checked>
+
+                </label>
+
+            </div>
+
+        </div>
+
+        <!-- Apparence -->
+
+        <div class="bg-white rounded-2xl shadow p-8">
+
+            <h2 class="flex items-center gap-2 text-xl font-semibold mb-6">
+
+                <iconify-icon
+                    icon="heroicons:paint-brush-solid"
+                    class="text-pink-500 text-2xl">
+                </iconify-icon>
+
+                Apparence
+
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+
+                <div>
+
+                    <label class="block mb-2 text-sm font-medium">
+
+                        Thème
+
+                    </label>
+
+                    <select class="w-full rounded-xl border border-gray-300 px-4 py-3">
+
+                        <option>Clair</option>
+                        <option>Sombre</option>
+                        <option>Système</option>
+
+                    </select>
+
+                </div>
+
+                <div>
+
+                    <label class="block mb-2 text-sm font-medium">
+
+                        Langue
+
+                    </label>
+
+                    <select class="w-full rounded-xl border border-gray-300 px-4 py-3">
+
+                        <option>Français</option>
+                        <option>English</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Sécurité -->
+
+        <div class="bg-white rounded-2xl shadow p-8">
+
+            <h2 class="flex items-center gap-2 text-xl font-semibold mb-6">
+
+                <iconify-icon
+                    icon="heroicons:shield-check-solid"
+                    class="text-green-500 text-2xl">
+                </iconify-icon>
+
+                Sécurité
+
+            </h2>
+
+            <div class="space-y-6">
+
+                <label class="flex justify-between items-center">
+
+                    <span>Authentification à deux facteurs</span>
+
+                    <input type="checkbox" class="toggle">
+
+                </label>
+
+                <button
+                    type="button"
+                    class="flex items-center gap-2 rounded-xl bg-red-50 px-5 py-3 text-red-600 hover:bg-red-100">
+
+                    <iconify-icon
+                        icon="heroicons:trash-solid"
+                        class="text-xl">
+                    </iconify-icon>
+
+                    Supprimer mon compte
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- Boutons -->
+
+        <div class="flex justify-end gap-4">
+
+            <a href="{{ url_for('main.home') }}"
+               class="rounded-xl border border-gray-300 px-6 py-3 hover:bg-gray-100">
+
+                Annuler
+
+            </a>
+
+            <button
+                type="submit"
+                class="rounded-xl bg-indigo-600 px-8 py-3 text-white font-semibold hover:bg-indigo-700 transition">
+
+                Enregistrer
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+<style>
+
+.toggle{
+    appearance:none;
+    width:48px;
+    height:26px;
+    border-radius:9999px;
+    background:#d1d5db;
+    position:relative;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.toggle:checked{
+    background:#4f46e5;
+}
+
+.toggle::before{
+    content:"";
+    position:absolute;
+    left:3px;
+    top:3px;
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    background:white;
+    transition:.3s;
+}
+
+.toggle:checked::before{
+    transform:translateX(22px);
+}
+
+</style>
+
+{% endblock %}

@@ -14,146 +14,145 @@
     <!-- FullCalendar -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
 
 </head>
 
 <body class="bg-purple-100 overflow-hidden">
 
-<div class="flex h-screen">
+    <div class="flex h-screen">
 
-    <!-- Sidebar -->
+        <!-- Sidebar -->
 
-    <aside
-        id="sidebar"
-        class="w-72 bg-gradient-to-b from-purple-800 to-purple-600 text-white flex flex-col shadow-2xl transition-all duration-300 flex-shrink-0">
+        <aside id="sidebar"
+            class="w-72 bg-gradient-to-b from-purple-800 to-purple-600 text-white flex flex-col shadow-2xl transition-all duration-300 flex-shrink-0">
 
-        <!-- Logo -->
+            <!-- Logo -->
 
-        <div class="px-8 py-8 border-b border-purple-500">
+            <div class="px-8 py-8 border-b border-purple-500">
 
-            <h1 class="text-4xl font-extrabold tracking-wide">
+                <h1 class="text-4xl font-extrabold tracking-wide">
 
-                🌱 Vine Habit
+                    <iconify-icon icon="mdi:leaf"></iconify-icon> Vine Habit
 
-            </h1>
+                </h1>
 
-        </div>
+            </div>
 
-        <!-- Navigation -->
+            <!-- Navigation -->
 
-        <nav class="flex-1 px-5 py-8 space-y-4">
+            <nav class="flex-1 px-5 py-8 space-y-4">
 
-            <a href="{{ url_for('main.home') }}"
-               class="flex items-center px-5 py-4 rounded-2xl text-xl font-semibold hover:bg-white hover:text-purple-700 transition-all duration-200">
+                <a href="{{ url_for('main.home') }}"
+                    class="flex items-center px-5 py-4 rounded-2xl text-xl font-semibold hover:bg-white hover:text-purple-700 transition-all duration-200">
 
-                🏠 Home
+                    <iconify-icon icon="mdi:home"></iconify-icon> Home
 
-            </a>
+                </a>
 
-            <a href="{{ url_for('main.dashboard') }}"
-               class="flex items-center px-5 py-4 rounded-2xl text-xl font-semibold hover:bg-white hover:text-purple-700 transition-all duration-200">
+                <a href="{{ url_for('main.dashboard') }}"
+                    class="flex items-center px-5 py-4 rounded-2xl text-xl font-semibold hover:bg-white hover:text-purple-700 transition-all duration-200">
 
-                📊 Dashboard
+                    <iconify-icon icon="mdi:chart-bar"></iconify-icon> Dashboard
 
-            </a>
+                </a>
 
-            <a href="{{ url_for('main.goal') }}"
-               class="flex items-center px-5 py-4 rounded-2xl text-xl font-semibold hover:bg-white hover:text-purple-700 transition-all duration-200">
+                <a href="{{ url_for('main.goal') }}"
+                    class="flex items-center px-5 py-4 rounded-2xl text-xl font-semibold hover:bg-white hover:text-purple-700 transition-all duration-200">
 
-                🎯 Goal
+                    <iconify-icon icon="mdi:target"></iconify-icon> Goal
 
-            </a>
+                </a>
 
-            <a href="{{ url_for('main.settings') }}"
-               class="flex items-center px-5 py-4 rounded-2xl text-xl font-semibold hover:bg-white hover:text-purple-700 transition-all duration-200">
+                <a href="{{ url_for('main.settings') }}"
+                    class="flex items-center px-5 py-4 rounded-2xl text-xl font-semibold hover:bg-white hover:text-purple-700 transition-all duration-200">
 
-                ⚙️ Settings
+                    ⚙️ Settings
 
-            </a>
+                </a>
 
-        </nav>
+            </nav>
 
-        <!-- Déconnexion -->
+            <!-- Déconnexion -->
 
-        <div class="px-5 pb-6">
+            <div class="px-5 pb-6">
 
-            <a href="{{ url_for('main.logout') }}"
-               class="block text-center bg-red-500 hover:bg-red-600 py-4 rounded-2xl text-xl font-bold shadow-lg transition">
+                <a href="{{ url_for('main.logout') }}"
+                    class="block text-center bg-purple-200 hover:bg-purple-200 py-4 rounded-2xl text-xl font-bold shadow-lg transition">
 
-                Déconnexion
+                    Déconnexion
 
-            </a>
+                </a>
 
-        </div>
+            </div>
 
-    </aside>
+        </aside>
 
-    <!-- Contenu -->
+        <!-- Contenu -->
 
-    <main id="content"
-          class="flex-1 overflow-auto bg-purple-100 transition-all duration-300">
+        <main id="content" class="flex-1 overflow-auto bg-purple-100 transition-all duration-300">
 
-        <div class="p-6">
+            <div class="p-6">
 
-            <!-- Bouton Menu -->
+                <!-- Bouton Menu -->
 
-            <button id="toggleSidebar"
+                <button id="toggleSidebar"
                     class="bg-white rounded-xl shadow-lg w-12 h-12 text-2xl hover:bg-gray-100 transition">
 
-                ☰
+                    ☰
 
-            </button>
+                </button>
 
-            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% with messages = get_flashed_messages(with_categories=true) %}
 
                 {% if messages %}
 
-                    {% for category, message in messages %}
+                {% for category, message in messages %}
 
-                        <div class="mt-5 mb-5 rounded-xl bg-green-100 text-green-700 p-4">
+                <div class="mt-5 mb-5 rounded-xl bg-green-100 text-green-700 p-4">
 
-                            {{ message }}
+                    {{ message }}
 
-                        </div>
+                </div>
 
-                    {% endfor %}
+                {% endfor %}
 
                 {% endif %}
 
-            {% endwith %}
+                {% endwith %}
 
-            {% block content %}
-            {% endblock %}
+                {% block content %}
+                {% endblock %}
 
-        </div>
+            </div>
 
-    </main>
+        </main>
 
-</div>
+    </div>
 
-<script>
+    <script>
 
-const sidebar = document.getElementById("sidebar");
-const content = document.getElementById("content");
-const toggle = document.getElementById("toggleSidebar");
+        const sidebar = document.getElementById("sidebar");
+        const content = document.getElementById("content");
+        const toggle = document.getElementById("toggleSidebar");
 
-toggle.addEventListener("click", function () {
+        toggle.addEventListener("click", function () {
 
-    if (sidebar.classList.contains("hidden")) {
+            if (sidebar.classList.contains("hidden")) {
 
-        sidebar.classList.remove("hidden");
-        content.classList.remove("w-full");
+                sidebar.classList.remove("hidden");
+                content.classList.remove("w-full");
 
-    } else {
+            } else {
 
-        sidebar.classList.add("hidden");
-        content.classList.add("w-full");
+                sidebar.classList.add("hidden");
+                content.classList.add("w-full");
 
-    }
+            }
 
-});
+        });
 
-</script>
+    </script>
 
 </body>
 
