@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block titre %}Tableau de bord{% endblock %}
 
-{% block contenu %}
-<h2 class="mb-4">Bonjour {{ current_user.nom }}</h2>
+{% block content %}
+<h2 class="mb-4">Bonjour {{ current_user.username }}}</h2>
 
 <form method="POST" class="d-flex mb-4">
     {{ form.hidden_tag() }}
@@ -13,12 +13,12 @@
 <ul class="list-group">
     {% for tache in taches %}
         <li class="list-group-item d-flex justify-content-between align-items-center">
-            <span class="{% if tache.terminee %}text-decoration-line-through text-muted{% endif %}">
-                {{ tache.titre }}
+            <span class="{% if tache.is_completed %}text-decoration-line-through text-muted{% endif %}">
+                {{ tache.title }}
             </span>
             <span>
                 <a href="{{ url_for('main.terminer_tache', tache_id=tache.id) }}" class="btn btn-sm btn-outline-success">
-                    {% if tache.terminee %}Annuler{% else %}Terminer{% endif %}
+                    {% if tache.is_completed %}Annuler{% else %}Terminer{% endif %}
                 </a>
                 <a href="{{ url_for('main.supprimer_tache', tache_id=tache.id) }}" class="btn btn-sm btn-outline-danger">
                     Supprimer

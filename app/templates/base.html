@@ -14,11 +14,11 @@
     <!-- FullCalendar -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 </head>
 
-<body class="bg-purple-100 overflow-hidden">
+<body id="body" class="bg-purple-100 overflow-hidden">
 
     <div class="flex h-screen">
 
@@ -32,8 +32,7 @@
             <div class="px-8 py-8 border-b border-purple-500">
 
                 <h1 class="text-4xl font-extrabold tracking-wide">
-
-                    <iconify-icon icon="mdi:leaf"></iconify-icon> Vine Habit
+                    <i class="fa-solid fa-leaf"></i> Vine Habit
 
                 </h1>
 
@@ -46,28 +45,27 @@
                 <a href="{{ url_for('main.home') }}"
                     class="flex items-center px-5 py-4 rounded-2xl text-xl font-semibold hover:bg-white hover:text-purple-700 transition-all duration-200">
 
-                    <iconify-icon icon="mdi:home"></iconify-icon> Home
+                    <i class="fa-solid fa-house-circle-exclamation"></i> Home
+                </a>
+
+                <a href="{{ url_for('main.goal') }}"
+                    class="flex items-center px-5 py-4 rounded-2xl text-xl font-semibold hover:bg-white hover:text-purple-700 transition-all duration-200">
+
+                    <i class="fa-solid fa-target"></i> Goal
 
                 </a>
 
                 <a href="{{ url_for('main.dashboard') }}"
                     class="flex items-center px-5 py-4 rounded-2xl text-xl font-semibold hover:bg-white hover:text-purple-700 transition-all duration-200">
 
-                    <iconify-icon icon="mdi:chart-bar"></iconify-icon> Dashboard
-
-                </a>
-
-                <a href="{{ url_for('main.goal') }}"
-                    class="flex items-center px-5 py-4 rounded-2xl text-xl font-semibold hover:bg-white hover:text-purple-700 transition-all duration-200">
-
-                    <iconify-icon icon="mdi:target"></iconify-icon> Goal
+                    <i class="fa-solid fa-chart-bar"></i> Dashboard
 
                 </a>
 
                 <a href="{{ url_for('main.settings') }}"
                     class="flex items-center px-5 py-4 rounded-2xl text-xl font-semibold hover:bg-white hover:text-purple-700 transition-all duration-200">
 
-                    ⚙️ Settings
+                    <i class="fa-solid fa-gear"></i> Settings
 
                 </a>
 

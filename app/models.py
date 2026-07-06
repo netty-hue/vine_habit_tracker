@@ -82,6 +82,9 @@ class Goal(db.Model):
     title = db.Column(db.String(150), nullable=False)
     description = db.Column(db.String(500))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    type       = db.Column(db.String(20), default='court_terme')  # court_terme / long_terme
+    task_limit = db.Column(db.Integer, default=5)
+    is_archived = db.Column(db.Boolean, default=False)
 
     habits = db.relationship(
         'Habit',
@@ -230,6 +233,8 @@ class TodoItem(db.Model):
         db.DateTime,
         default=datetime.utcnow
     )
+    creneau  = db.Column(db.String(10), default='matin')
+    deadline = db.Column(db.Date, nullable=True)
 
     def __repr__(self):
         return f"<TodoItem {self.title}>"
