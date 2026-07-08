@@ -55,26 +55,6 @@ def inscription():
 
 # ---------------- CONNEXION ----------------
 
-# @main.route("/login", methods=["GET", "POST"])
-# def login():
-
-#     form = ConnexionForm()
-
-#     if form.validate_on_submit():
-
-#         utilisateur = User.query.filter_by(
-#             email=form.email.data
-#         ).first()
-
-#         if utilisateur and utilisateur.check_password(form.mot_de_passe.data):
-
-#             login_user(utilisateur)
-
-#             return redirect(url_for("main.home"))
-
-#         flash("Email ou mot de passe incorrect.", "danger")
-
-#     return render_template("connexion/login.html", form=form)
 
 @main.route("/login", methods=["GET", "POST"])
 def login():
