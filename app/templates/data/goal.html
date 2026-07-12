@@ -1,32 +1,384 @@
 {% extends "base.html" %}
-{% block titre %}Tableau de bord{% endblock %}
+{% block title %}Mes Objectifs — HabitFlow{% endblock %}
 
 {% block content %}
+
 <h2 class="mb-4">Bonjour {{ current_user.username }}</h2>
+<script src="https://cdn.tailwindcss.com"></script>
 
-<form method="POST" class="d-flex mb-4">
-    {{ form.hidden_tag() }}
-    {{ form.titre(class="form-control me-2", placeholder="Nouvelle tâche") }}
-    {{ form.submit(class="btn btn-primary") }}
-</form>
+<div class="bg-gray-50 min-h-screen p-6">
+  <div class="max-w-2xl mx-auto">
 
-<ul class="list-group">
-    {% for tache in taches %}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <span class="{% if tache.is_completed %}text-decoration-line-through text-muted{% endif %}">
-                {{ tache.title }}
-            </span>
-            <span>
-                <a href="{{ url_for('main.terminer_tache', tache_id=tache.id) }}" class="btn btn-sm btn-outline-success">
-                    {% if tache.is_completed %}Annuler{% else %}Terminer{% endif %}
-                </a>
-                <a href="{{ url_for('main.supprimer_tache', tache_id=tache.id) }}" class="btn btn-sm btn-outline-danger">
-                    Supprimer
-                </a>
-            </span>
-        </li>
-    {% else %}
-        <li class="list-group-item">Aucune tâche pour le moment.</li>
-    {% endfor %}
-</ul>
+
+    <!-- HEADER -->
+    <div class="bg-gradient-to-r from-purple-700 to-purple-400 rounded-2xl p-8 mb-8 shadow-lg">
+      <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">Mes Objectifs 🌱</h1>
+      <p class="text-purple-200 text-sm md:text-base">
+        Chaque grand changement commence par un WHY clair.
+        Définis où tu veux aller, puis construis le chemin habitude par habitude.
+      </p>
+    </div>
+
+
+    <!-- ================================================
+         SECTION 1 — CRÉER UN OBJECTIF
+    ================================================ -->
+    <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
+
+      <div class="flex items-center gap-3 mb-2">
+        <span class="bg-purple-100 text-purple-700 font-bold text-sm px-3 py-1 rounded-full">Étape 1</span>
+        <h2 class="text-lg font-bold text-gray-700">Ton objectif</h2>
+      </div>
+
+      <p class="text-gray-400 text-sm mb-1">
+        Un objectif est large et ambitieux — c'est ta destination finale.
+      </p>
+      <p class="text-gray-400 text-sm mb-5">
+        ✅ <span class="italic">"Toned body + good posture"</span> &nbsp;
+        ✅ <span class="italic">"Lancer mon entreprise"</span> &nbsp;
+        ❌ <span class="italic">"Faire du sport"</span> (trop vague)
+      </p>
+
+      <form method="POST" action="{{ url_for('main.create_goal') }}">
+
+        <!-- WHY -->
+        <div class="mb-4">
+          <label class="block text-sm font-semibold text-gray-600 mb-1">Quel est ton WHY ?</label>
+          <input type="text" name="goal_title" required
+            placeholder="Ex: Toned body + good posture"
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
+        </div>
+
+        <!-- Description -->
+        <div class="mb-4">
+          <label class="block text-sm font-semibold text-gray-600 mb-1">Pourquoi cet objectif est important pour toi ?</label>
+          <textarea name="goal_description" rows="2"
+            placeholder="Ex: Je veux me sentir bien dans mon corps et avoir plus d'énergie au quotidien..."
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100"></textarea>
+        </div>
+
+        <!-- Durée + limite tâches -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+
+          <!-- Court terme / Long terme -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-600 mb-2">Type d'objectif</label>
+            <div class="flex gap-3">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="goal_type" value="court_terme" checked
+                  class="accent-purple-600">
+                <span class="text-sm text-gray-600">Court terme</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="goal_type" value="long_terme"
+                  class="accent-purple-600">
+                <span class="text-sm text-gray-600">Long terme</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Limite de tâches par jour -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-600 mb-1">
+              Limite de tâches / jour
+            </label>
+            <input type="number" name="goal_task_limit" min="1" max="20" value="5"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
+            <p class="text-xs text-gray-400 mt-1">Pour éviter la surcharge. Recommandé : 3 à 5.</p>
+          </div>
+
+        </div>
+
+        <button type="submit"
+          class="bg-gradient-to-r from-purple-700 to-purple-500 text-white px-6 py-3 rounded-full font-semibold hover:opacity-90 transition text-sm">
+          Enregistrer mon objectif →
+        </button>
+
+      </form>
+    </div>
+
+
+    <!-- ================================================
+         SECTION 2 — AJOUTER UNE HABITUDE
+         Visible seulement si un objectif existe
+    ================================================ -->
+    {% if goals_actifs %}
+    <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
+
+      <div class="flex items-center gap-3 mb-2">
+        <span class="bg-purple-100 text-purple-700 font-bold text-sm px-3 py-1 rounded-full">Étape 2</span>
+        <h2 class="text-lg font-bold text-gray-700">Tes habitudes</h2>
+      </div>
+
+      <p class="text-gray-400 text-sm mb-1">
+        Une habitude est une action répétée régulièrement pour atteindre ton objectif.
+        Elle se fait <strong>chaque jour</strong> — donc elle doit être réaliste.
+      </p>
+      <p class="text-gray-400 text-sm mb-5">
+        ✅ <span class="italic">"Sport (cardio + posture)"</span> &nbsp;
+        ❌ <span class="italic">"Aller à la salle 3h tous les jours"</span> (irréaliste)
+      </p>
+
+      <form method="POST" action="{{ url_for('main.create_habit') }}">
+
+        <!-- Objectif lié -->
+        <div class="mb-4">
+          <label class="block text-sm font-semibold text-gray-600 mb-1">Pour quel objectif ?</label>
+          <select name="habit_goal_id"
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400">
+            {% for goal in goals_actifs %}
+            <option value="{{ goal.id }}">{{ goal.title }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Nom -->
+        <div class="mb-4">
+          <label class="block text-sm font-semibold text-gray-600 mb-1">Nom de l'habitude</label>
+          <input type="text" name="habit_title" required
+            placeholder="Ex: Sport, Lecture, Méditation..."
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
+        </div>
+
+        <!-- WHY de l'habitude -->
+        <div class="mb-4">
+          <label class="block text-sm font-semibold text-gray-600 mb-1">
+            Comment cette habitude t'aide à atteindre ton objectif ?
+          </label>
+          <input type="text" name="habit_why"
+            placeholder="Ex: Le sport améliore ma posture et me donne de l'énergie..."
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
+        </div>
+
+        <!-- Résultat attendu -->
+        <div class="mb-4">
+          <label class="block text-sm font-semibold text-gray-600 mb-1">Résultat attendu</label>
+          <input type="text" name="habit_expected_result"
+            placeholder="Ex: Perdre 5kg, Améliorer ma posture en 2 mois..."
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
+        </div>
+
+        <!-- Jours + durée -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+          <div>
+            <label class="block text-sm font-semibold text-gray-600 mb-1">Jours</label>
+            <input type="text" name="habit_schedule_days"
+              placeholder="Ex: Lun, Mar, Mer, Jeu, Ven"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-600 mb-1">Durée (minutes)</label>
+            <input type="number" name="habit_duration" min="1"
+              placeholder="Ex: 30"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
+          </div>
+        </div>
+
+        <button type="submit"
+          class="bg-gradient-to-r from-purple-700 to-purple-500 text-white px-6 py-3 rounded-full font-semibold hover:opacity-90 transition text-sm">
+          Ajouter cette habitude →
+        </button>
+
+      </form>
+
+      <!-- Liste des habitudes existantes -->
+      {% if habits %}
+      <div class="mt-6 border-t border-gray-100 pt-4">
+        <h3 class="text-sm font-semibold text-gray-500 mb-3">Habitudes ajoutées :</h3>
+        {% for habit in habits %}
+        <div class="flex items-center justify-between py-2 border-b border-gray-50">
+          <div>
+            <p class="text-sm font-medium text-gray-700">{{ habit.title }}</p>
+            <p class="text-xs text-gray-400">{{ habit.schedule_days }} · {{ habit.duration }} min</p>
+          </div>
+          <div class="flex gap-3">
+            <a href="{{ url_for('main.modifier_habitude', habit_id=habit.id) }}"
+               class="text-xs text-purple-500 hover:text-purple-700 font-medium">Modifier</a>
+            <a href="{{ url_for('main.supprimer_habitude', habit_id=habit.id) }}"
+               class="text-xs text-red-400 hover:text-red-600 font-medium">Supprimer</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+    </div>
+    {% endif %}
+
+
+    <!-- ================================================
+         SECTION 3 — TÂCHES
+         Visible seulement si des habitudes existent
+    ================================================ -->
+    {% if habits %}
+    <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
+
+      <div class="flex items-center gap-3 mb-2">
+        <span class="bg-purple-100 text-purple-700 font-bold text-sm px-3 py-1 rounded-full">Étape 3</span>
+        <h2 class="text-lg font-bold text-gray-700">Tes tâches</h2>
+      </div>
+
+      <p class="text-gray-400 text-sm mb-1">
+        Une tâche est <strong>concrète, chiffrée et réaliste</strong>.
+        Elle découpe ton habitude en actions précises pour aujourd'hui.
+      </p>
+      <p class="text-gray-400 text-sm mb-1">
+        ✅ <span class="italic">"15 min cardio"</span>, 
+        <span class="italic">"10 reps push-ups"</span>, 
+        <span class="italic">"20 reps shoulder press"</span>
+      </p>
+      <p class="text-gray-400 text-sm mb-5">
+        ❌ <span class="italic">"400 push-ups"</span> (irréaliste) &nbsp;
+        ❌ <span class="italic">"Faire du sport"</span> (pas chiffré)
+      </p>
+
+      <form method="POST" action="{{ url_for('main.goal') }}">
+
+        <!-- Nom de la tâche -->
+        <div class="mb-4">
+          <label class="block text-sm font-semibold text-gray-600 mb-1">
+            Quelle est ta tâche ? (sois précis et réaliste)
+          </label>
+          <input type="text" name="titre" required
+            placeholder="Ex: 15 min cardio, 10 reps push-ups..."
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
+        </div>
+
+        <!-- Créneau Matin / Soir -->
+        <div class="mb-4">
+          <label class="block text-sm font-semibold text-gray-600 mb-2">Créneau</label>
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="task_creneau" value="matin" checked
+                class="accent-purple-600">
+              <span class="text-sm text-gray-600">🌅 Matin</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="task_creneau" value="soir"
+                class="accent-purple-600">
+              <span class="text-sm text-gray-600">🌙 Soir</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Date limite -->
+        <div class="mb-5">
+          <label class="block text-sm font-semibold text-gray-600 mb-1">Date limite (optionnel)</label>
+          <input type="date" name="task_deadline"
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
+        </div>
+
+        <button type="submit"
+          class="bg-gradient-to-r from-purple-700 to-purple-500 text-white px-6 py-3 rounded-full font-semibold hover:opacity-90 transition text-sm">
+          Ajouter cette tâche →
+        </button>
+
+      </form>
+
+      <!-- Liste des tâches -->
+      {% if taches %}
+      <div class="mt-6 border-t border-gray-100 pt-4">
+        <h3 class="text-sm font-semibold text-gray-500 mb-3">Tâches ajoutées :</h3>
+
+        <!-- Matin -->
+        <p class="text-xs font-semibold text-purple-400 mb-2">🌅 Matin</p>
+        {% for tache in taches if tache.creneau == 'matin' %}
+        <div class="flex items-center justify-between py-2 border-b border-gray-50">
+          <span class="text-sm {{ 'line-through text-gray-300' if tache.is_completed else 'text-gray-700' }}">
+            {{ tache.title }}
+          </span>
+          <div class="flex gap-3">
+            <a href="{{ url_for('main.terminer_tache', tache_id=tache.id) }}"
+               class="text-xs text-purple-500 hover:text-purple-700 font-medium">
+              {{ '↩ Rouvrir' if tache.is_completed else '✓ Fait' }}
+            </a>
+            <a href="{{ url_for('main.supprimer_tache', tache_id=tache.id) }}"
+               class="text-xs text-red-400 hover:text-red-600 font-medium">Supprimer</a>
+          </div>
+        </div>
+        {% else %}
+        <p class="text-xs text-gray-300 mb-3">Aucune tâche le matin.</p>
+        {% endfor %}
+
+        <!-- Soir -->
+        <p class="text-xs font-semibold text-purple-400 mt-4 mb-2">🌙 Soir</p>
+        {% for tache in taches if tache.creneau == 'soir' %}
+        <div class="flex items-center justify-between py-2 border-b border-gray-50">
+          <span class="text-sm {{ 'line-through text-gray-300' if tache.is_completed else 'text-gray-700' }}">
+            {{ tache.title }}
+          </span>
+          <div class="flex gap-3">
+            <a href="{{ url_for('main.terminer_tache', tache_id=tache.id) }}"
+               class="text-xs text-purple-500 hover:text-purple-700 font-medium">
+              {{ '↩ Rouvrir' if tache.is_completed else '✓ Fait' }}
+            </a>
+            <a href="{{ url_for('main.supprimer_tache', tache_id=tache.id) }}"
+               class="text-xs text-red-400 hover:text-red-600 font-medium">Supprimer</a>
+          </div>
+        </div>
+        {% else %}
+        <p class="text-xs text-gray-300 mb-3">Aucune tâche le soir.</p>
+        {% endfor %}
+
+      </div>
+      {% endif %}
+
+    </div>
+    {% endif %}
+
+
+    <!-- ================================================
+         SECTION 4 — OBJECTIFS ACTIFS
+    ================================================ -->
+    {% if goals_actifs %}
+    <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
+      <h2 class="text-lg font-bold text-gray-700 mb-4">Objectifs en cours 🎯</h2>
+
+      {% for goal in goals_actifs %}
+      <div class="flex items-start justify-between py-3 border-b border-gray-50">
+        <div>
+          <p class="text-sm font-semibold text-gray-700">{{ goal.title }}</p>
+          <p class="text-xs text-gray-400">{{ goal.description }}</p>
+          <span class="text-xs {{ 'text-purple-500' if goal.type == 'long_terme' else 'text-blue-400' }}">
+            {{ '🏁 Long terme' if goal.type == 'long_terme' else '⚡ Court terme' }}
+          </span>
+        </div>
+        <div class="flex gap-3 ml-4">
+          <a href="{{ url_for('main.archiver_goal', goal_id=goal.id) }}"
+             class="text-xs text-gray-400 hover:text-gray-600 font-medium">Archiver</a>
+          <a href="{{ url_for('main.supprimer_goal', goal_id=goal.id) }}"
+             class="text-xs text-red-400 hover:text-red-600 font-medium">Supprimer</a>
+        </div>
+      </div>
+      {% endfor %}
+
+    </div>
+    {% endif %}
+
+
+    <!-- ================================================
+         SECTION 5 — OBJECTIFS ARCHIVÉS
+    ================================================ -->
+    {% if goals_archives %}
+    <div class="bg-gray-100 rounded-2xl p-6 mb-6">
+      <h2 class="text-lg font-bold text-gray-400 mb-4">Objectifs passés 📦</h2>
+
+      {% for goal in goals_archives %}
+      <div class="flex items-start justify-between py-3 border-b border-gray-200">
+        <div>
+          <p class="text-sm font-semibold text-gray-400 line-through">{{ goal.title }}</p>
+          <span class="text-xs text-gray-400">Archivé</span>
+        </div>
+        <a href="{{ url_for('main.supprimer_goal', goal_id=goal.id) }}"
+           class="text-xs text-red-300 hover:text-red-500 font-medium ml-4">Supprimer</a>
+      </div>
+      {% endfor %}
+
+    </div>
+    {% endif %}
+
+
+  </div>
+</div>
+
 {% endblock %}

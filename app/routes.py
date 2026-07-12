@@ -53,7 +53,6 @@ def inscription():
     return render_template("connexion/register.html", form=form)
 
 
-# ---------------- CONNEXION ----------------
 
 @main.route("/login", methods=["GET", "POST"])
 def login():
