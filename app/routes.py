@@ -4,7 +4,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from app import db
 from app.models import User, TodoItem, Goal, Habit
 from app.forms import InscriptionForm, ConnexionForm, TacheForm
-from datetime import date
+from datetime import datetime, date
 
 main = Blueprint("main", __name__)
 
@@ -150,6 +150,23 @@ def archiver_goal(goal_id):
         flash("Objectif archivé.", "info")
     return redirect(url_for("main.goal"))
 
+@main.route("/tache/<int:tache_id>/terminer")
+@login_required
+def terminer_tache(tache_id):
+    tache = TodoItem.query.get_or_404(tache_id)
+
+    if tache.user_id != current_user.id:
+        flash("Action non autorisée.", "danger")
+        return redirect(url_for("main.goal"))
+
+    tache.is_completed = True
+
+    db.session.commit()
+
+    flash("Tâche terminée !", "success")
+
+    return redirect(url_for("main.goal"))
+
 
 @main.route("/goal/<int:goal_id>/supprimer")
 @login_required
@@ -213,6 +230,8 @@ def modifier_habitude(habit_id):
     return render_template("data/modifier_habitude.html", habit=habit)
 
 
+
+
 # ── TÂCHES ───────────────────────────────────────────────────────
 
 @main.route("/goal", methods=["GET", "POST"])
@@ -237,11 +256,17 @@ def goal():
         if existing >= task_limit:
             flash(f"Limite de {task_limit} tâches par jour atteinte pour cet objectif. Reste focalisé !", "danger")
             return redirect(url_for("main.goal"))
+        
+        deadline_str = request.form.get("task_deadline")
+
+        deadline = None
+        if deadline_str:
+            deadline = datetime.strptime(deadline_str, "%Y-%m-%d").date()
 
         nouvelle_tache = TodoItem(
             title=request.form.get("titre"),
             creneau=creneau,
-            deadline=request.form.get("task_deadline") or None,
+            deadline=deadline,
             user_id=current_user.id
         )
         db.session.add(nouvelle_tache)
@@ -260,6 +285,23 @@ def goal():
         goals_archives=goals_archives,
         habits=habits
     )
+
+@main.route("/tache/<int:tache_id>/supprimer")
+@login_required
+def supprimer_tache(tache_id):
+    tache = TodoItem.query.get_or_404(tache_id)
+
+    if tache.user_id != current_user.id:
+        flash("Action non autorisée.", "danger")
+        return redirect(url_for("main.goal"))
+
+    db.session.delete(tache)
+    db.session.commit()
+
+    flash("Tâche supprimée.", "success")
+
+    return redirect(url_for("main.goal"))
+
 # ---------------- SETTINGS ----------------
 
 @main.route("/settings", methods=["GET", "POST"])
@@ -298,6 +340,8 @@ def settings():
 
 # ---------------- HOME ----------------
 
+from datetime import date
+
 @main.route("/home")
 @login_required
 def home():
@@ -305,18 +349,19 @@ def home():
     habits = Habit.query.filter_by(user_id=current_user.id).all()
 
     total_habits = len(habits)
-
     completed_today = 0
-
     streak = 0
 
-    events = [
-        {
-            "title": t.title,
-            "start": t.created_at.strftime("%Y-%m-%d")
-        }
-        for t in TodoItem.query.filter_by(user_id=current_user.id).all()
-    ]
+    today = date.today().strftime("%Y-%m-%d")
+
+    events = []
+
+    for habit in habits:
+        events.append({
+            "title": habit.title,   # ou habit.name selon ton modèle
+            "start": today,
+            "allDay": True
+        })
 
     return render_template(
         "acceuil/home.html",

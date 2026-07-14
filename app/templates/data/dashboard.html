@@ -1,241 +1,182 @@
-
 {% extends "base.html" %}
-{% block title %}Dashboard_Vine{% endblock %}
+
+{% block titre %}Tableau de Bord — Vine Habit{% endblock %}
 
 {% block content %}
-
-<script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="bg-gray-50 min-h-screen p-6">
-  <div class="max-w-4xl mx-auto">
+<div class="space-y-8">
 
-
-    <!-- HEADER -->
-    <div class="bg-gradient-to-r from-purple-700 to-purple-400 rounded-2xl p-8 mb-6 shadow-lg">
-      <h1 class="text-3xl font-bold text-white mb-1">
-        Hello, {{ current_user.username }} 
-      </h1>
-      <p class="text-purple-200 text-sm">Track your habits, build your streaks.</p>
+    <div class="bg-gradient-to-r from-purple-800 to-purple-600 rounded-3xl p-8 shadow-xl text-white">
+        <h1 class="text-3xl font-black mb-1">Suivi de tes Habitudes</h1>
+        <p class="text-purple-200 text-sm">Visualise tes efforts et garde le rythme chaque jour.</p>
     </div>
 
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-2xl shadow-sm border-l-4 border-purple-700 p-6">
+            <p class="text-gray-400 text-xs font-semibold uppercase tracking-wider">Série Actuelle</p>
+            <p class="text-4xl font-black text-purple-900 mt-2">{{ current_streak }} <span class="text-sm font-normal text-gray-500">jours consécutifs</span></p>
+            <p class="text-orange-500 text-xs font-medium mt-1 flex items-center gap-1">Tu es en feu ! 🔥</p>
+        </div>
 
-    <!-- STATS CARDS -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-white rounded-2xl shadow-sm border-l-4 border-purple-400 p-6">
+            <p class="text-gray-400 text-xs font-semibold uppercase tracking-wider">Meilleure Série</p>
+            <p class="text-4xl font-black text-purple-700 mt-2">{{ best_streak }} <span class="text-sm font-normal text-gray-500">jours max</span></p>
+            <p class="text-purple-400 text-xs font-medium mt-1 flex items-center gap-1">Record personnel 🏆</p>
+        </div>
 
-      <div class="bg-white rounded-2xl shadow-md p-6 border-l-4 border-purple-600">
-        <p class="text-gray-500 text-sm mb-1">Current Streak</p>
-        <p class="text-4xl font-bold text-purple-700">{{ current_streak }}</p>
-        <p class="text-gray-400 text-xs mt-1">days in a row 🔥</p>
-      </div>
-
-      <div class="bg-white rounded-2xl shadow-md p-6 border-l-4 border-purple-400">
-        <p class="text-gray-500 text-sm mb-1">Best Streak</p>
-        <p class="text-4xl font-bold text-purple-500">{{ best_streak }}</p>
-        <p class="text-gray-400 text-xs mt-1">personal record 🏆</p>
-      </div>
-
-      <div class="bg-white rounded-2xl shadow-md p-6 border-l-4 border-gray-300">
-        <p class="text-gray-500 text-sm mb-1">This Month</p>
-        <p class="text-4xl font-bold text-gray-700">{{ month_completion_rate }}%</p>
-        <p class="text-gray-400 text-xs mt-1">completion rate 📅</p>
-      </div>
-
+        <div class="bg-white rounded-2xl shadow-sm border-l-4 border-purple-200 p-6">
+            <p class="text-gray-400 text-xs font-semibold uppercase tracking-wider">Ce Mois-ci</p>
+            <p class="text-4xl font-black text-gray-800 mt-2">{{ month_completion_rate }}%</p>
+            <p class="text-gray-400 text-xs font-medium mt-1">Taux de réussite global 📅</p>
+        </div>
     </div>
 
-
-    <!-- HEATMAP -->
-    <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
-      <h2 class="text-lg font-bold text-gray-700 mb-4">Activity this year</h2>
-      <div class="overflow-x-auto">
-        <div id="heatmap" class="grid grid-flow-col gap-1"
-             style="grid-template-rows: repeat(7, 12px);"></div>
-      </div>
-      <div class="flex items-center justify-end gap-2 mt-4 text-xs text-gray-400">
-        <span>Less</span>
-        <div class="w-3 h-3 rounded bg-gray-200"></div>
-        <div class="w-3 h-3 rounded bg-purple-200"></div>
-        <div class="w-3 h-3 rounded bg-purple-400"></div>
-        <div class="w-3 h-3 rounded bg-purple-700"></div>
-        <span>More</span>
-      </div>
+    <div class="bg-white rounded-2xl shadow-sm border border-purple-100 p-6">
+        <h2 class="text-lg font-bold text-purple-950 mb-4 flex items-center gap-2">
+            <i data-lucide="grid" class="w-5 h-5 text-purple-600"></i> Activité cette année
+        </h2>
+        <div class="overflow-x-auto">
+            <div id="heatmap" class="grid grid-flow-col gap-1 min-w-[600px]" style="grid-template-rows: repeat(7, 12px);"></div>
+        </div>
+        <div class="flex items-center justify-end gap-2 mt-4 text-xs text-gray-400">
+            <span>Moins</span>
+            <div class="w-3 h-3 rounded bg-gray-200"></div>
+            <div class="w-3 h-3 rounded bg-purple-200"></div>
+            <div class="w-3 h-3 rounded bg-purple-400"></div>
+            <div class="w-3 h-3 rounded bg-purple-700"></div>
+            <span>Plus</span>
+        </div>
     </div>
 
+    <div class="bg-white rounded-2xl shadow-sm border border-purple-100 p-6 space-y-8">
+        <div>
+            <h2 class="text-lg font-bold text-purple-950 mb-1">Analyses avancées</h2>
+            <p class="text-gray-400 text-sm">Évolution de ton taux de complétion (%)</p>
+        </div>
 
-    <!-- ANALYTICS -->
-    <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
+        <div class="space-y-6">
+            <div>
+                <h3 class="text-xs font-bold text-purple-600 uppercase tracking-wider mb-3">Progression — 30 derniers jours</h3>
+                <div class="max-h-64">
+                    <canvas id="lineChart" height="100"></canvas>
+                </div>
+            </div>
 
-      <h2 class="text-lg font-bold text-gray-700 mb-1">Analytics</h2>
-      <p class="text-gray-400 text-sm mb-6">Completion rate over time (%)</p>
+            <div class="border-t border-purple-50"></div>
 
-      <!-- Courbe d'évolution -->
-      <h3 class="text-sm font-semibold text-purple-600 mb-2">Evolution curve — last 30 days</h3>
-      <canvas id="lineChart" height="100"></canvas>
-
-      <div class="my-6 border-t border-gray-100"></div>
-
-      <!-- Histogramme par mois -->
-      <h3 class="text-sm font-semibold text-purple-600 mb-2">Monthly distribution — last 6 months</h3>
-      <canvas id="barChart" height="100"></canvas>
-
+            <div>
+                <h3 class="text-xs font-bold text-purple-600 uppercase tracking-wider mb-3">Distribution Mensuelle — 6 derniers mois</h3>
+                <div class="max-h-64">
+                    <canvas id="barChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
 
-
-    <!-- QUICK ACTIONS -->
-    <div class="flex flex-wrap gap-3">
-      <a href="{{ url_for('main.goal') }}"
-         class="bg-gradient-to-r from-purple-700 to-purple-500 text-white px-6 py-3 rounded-full font-semibold hover:opacity-90 transition">
-        + New Goal
-      </a>
-      <a href="{{ url_for('main.settings') }}"
-         class="bg-white border border-purple-300 text-purple-700 px-6 py-3 rounded-full font-semibold hover:bg-purple-50 transition">
-        Settings
-      </a>
+    <div class="flex items-center gap-4">
+        <a href="{{ url_for('main.goal') }}" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-xl text-sm transition shadow-md shadow-purple-100">
+            <i data-lucide="plus" class="w-4 h-4"></i> Nouvel Objectif
+        </a>
+        <a href="{{ url_for('main.settings') }}" class="inline-flex items-center gap-2 bg-white border border-purple-200 text-purple-700 hover:bg-purple-50 font-semibold px-6 py-3 rounded-xl text-sm transition">
+            <i data-lucide="settings" class="w-4 h-4"></i> Paramètres
+        </a>
     </div>
 
-
-  </div>
 </div>
 
-
 <script>
+    // ── DATA FROM FLASK ─────────────────────────────────────
+    const logData = {{ log_data | tojson }};
+    const dailyRates   = {{ daily_rates | tojson }};
+    const monthlyRates = {{ monthly_rates | tojson }};
 
-  // ── HEATMAP DATA from Flask ──────────────────────────────
-  const logData = {{ log_data | tojson }};
-
-  // ── ANALYTICS DATA from Flask ────────────────────────────
-  // daily_rates  = { "2025-06-01": 80, "2025-06-02": 60, ... }
-  // monthly_rates = { "Jan": 72, "Feb": 65, ... }
-  const dailyRates   = {{ daily_rates | tojson }};
-  const monthlyRates = {{ monthly_rates | tojson }};
-
-
-  // ── HEATMAP ──────────────────────────────────────────────
-  function getColor(count) {
-    if (count === 0) return 'bg-gray-200';
-    if (count === 1) return 'bg-purple-200';
-    if (count === 2) return 'bg-purple-400';
-    return 'bg-purple-700';
-  }
-
-  function buildHeatmap() {
-    const container = document.getElementById('heatmap');
-    const today = new Date();
-    const start = new Date(today);
-    start.setDate(today.getDate() - 364);
-    let current = new Date(start);
-
-    while (current <= today) {
-      const key = current.toISOString().split('T')[0];
-      const count = logData[key] || 0;
-      const cell = document.createElement('div');
-      cell.className = `w-3 h-3 rounded ${getColor(count)}`;
-      cell.title = `${current.toLocaleDateString('en-GB')} — ${count} habit(s)`;
-      container.appendChild(cell);
-      current.setDate(current.getDate() + 1);
+    // ── HEATMAP BUILDER ──────────────────────────────────────
+    function getColor(count) {
+        if (count === 0) return 'bg-gray-200';
+        if (count === 1) return 'bg-purple-200';
+        if (count === 2) return 'bg-purple-400';
+        return 'bg-purple-700';
     }
-  }
 
-  buildHeatmap();
+    function buildHeatmap() {
+        const container = document.getElementById('heatmap');
+        const today = new Date();
+        const start = new Date(today);
+        start.setDate(today.getDate() - 364);
+        let current = new Date(start);
 
+        while (current <= today) {
+            const key = current.toISOString().split('T')[0];
+            const count = logData[key] || 0;
+            const cell = document.createElement('div');
+            cell.className = `w-3 h-3 rounded-sm ${getColor(count)}`;
+            cell.title = `${current.toLocaleDateString('fr-FR')} — ${count} habitude(s)`;
+            container.appendChild(cell);
+            current.setDate(current.getDate() + 1);
+        }
+    }
 
-  // ── SHARED CHART STYLE ───────────────────────────────────
-  const purpleGradient = (ctx) => {
-    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-    gradient.addColorStop(0, 'rgba(147, 51, 234, 0.4)');  // purple-600
-    gradient.addColorStop(1, 'rgba(147, 51, 234, 0.0)');
-    return gradient;
-  };
+    buildHeatmap();
 
+    // ── CHARTS GENERATION ────────────────────────────────────
+    const purpleGradient = (ctx) => {
+        const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, 'rgba(124, 58, 237, 0.3)');
+        gradient.addColorStop(1, 'rgba(124, 58, 237, 0.0)');
+        return gradient;
+    };
 
-  // ── LINE CHART — evolution curve ─────────────────────────
-  const lineLabels = Object.keys(dailyRates);   // dates
-  const lineValues = Object.values(dailyRates); // rates 0-100
-
-  const lineCtx = document.getElementById('lineChart').getContext('2d');
-
-  new Chart(lineCtx, {
-    type: 'line',
-    data: {
-      labels: lineLabels,
-      datasets: [{
-        label: 'Completion rate (%)',
-        data: lineValues,
-        borderColor: '#7c3aed',          // purple-700
-        backgroundColor: purpleGradient(lineCtx),
-        borderWidth: 2,
-        pointRadius: 3,
-        pointBackgroundColor: '#7c3aed',
-        fill: true,
-        tension: 0.4                     // smooth curve
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          min: 0,
-          max: 100,
-          ticks: { callback: value => value + '%' }
+    // Line Chart
+    const lineCtx = document.getElementById('lineChart').getContext('2d');
+    new Chart(lineCtx, {
+        type: 'line',
+        data: {
+            labels: Object.keys(dailyRates),
+            datasets: [{
+                data: Object.values(dailyRates),
+                borderColor: '#7c3aed',
+                backgroundColor: purpleGradient(lineCtx),
+                borderWidth: 2,
+                pointRadius: 2,
+                fill: true,
+                tension: 0.3
+            }]
         },
-        x: {
-          ticks: {
-            maxTicksLimit: 10,           // avoid crowded x-axis
-            maxRotation: 45
-          }
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { min: 0, max: 100, ticks: { callback: v => v + '%' } }
+            },
+            plugins: { legend: { display: false } }
         }
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: ctx => ` ${ctx.parsed.y}% completed`
-          }
+    });
+
+    // Bar Chart
+    const barCtx = document.getElementById('barChart').getContext('2d');
+    new Chart(barCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(monthlyRates),
+            datasets: [{
+                data: Object.values(monthlyRates),
+                backgroundColor: 'rgba(124, 58, 237, 0.7)',
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { min: 0, max: 100, ticks: { callback: v => v + '%' } }
+            },
+            plugins: { legend: { display: false } }
         }
-      }
-    }
-  });
+    });
 
-
-  // ── BAR CHART — monthly histogram ───────────────────────
-  const barLabels = Object.keys(monthlyRates);   // month names
-  const barValues = Object.values(monthlyRates); // rates 0-100
-
-  const barCtx = document.getElementById('barChart').getContext('2d');
-
-  new Chart(barCtx, {
-    type: 'bar',
-    data: {
-      labels: barLabels,
-      datasets: [{
-        label: 'Monthly completion rate (%)',
-        data: barValues,
-        backgroundColor: 'rgba(147, 51, 234, 0.7)',  // purple semi-transparent
-        borderColor: '#7c3aed',
-        borderWidth: 1,
-        borderRadius: 6                               // rounded bars
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          min: 0,
-          max: 100,
-          ticks: { callback: value => value + '%' }
-        }
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: ctx => ` ${ctx.parsed.y}% that month`
-          }
-        }
-      }
-    }
-  });
-
+    document.addEventListener("DOMContentLoaded", function() {
+        lucide.createIcons();
+    });
 </script>
-
 {% endblock %}

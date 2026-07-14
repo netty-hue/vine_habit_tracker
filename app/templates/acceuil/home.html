@@ -1,108 +1,91 @@
 {% extends "base.html" %}
 
-{% block titre %}Accueil{% endblock %}
+{% block titre %}Accueil — Vine Habit{% endblock %}
 
 {% block content %}
+<div class="space-y-8">
 
-<div class="bg-purple-50 rounded-3xl p-6 h-full">
-
-    <!-- En-tête -->
-
-    <div>
-
-        <h1 class="text-4xl font-bold text-purple-800">
-
-            Bonjour {{ current_user.username }} <i class="fas fa-smile"></i>
-
-        </h1>
-
-        <p class="text-gray-500 mt-2">
-
-            Continue à construire de bonnes habitudes chaque jour.
-
-        </p>
-
+    <div class="flex items-center justify-between bg-white p-6 rounded-2xl shadow-sm border border-purple-100">
+        <div>
+            <h1 class="text-3xl font-bold text-purple-950 flex items-center gap-2">
+                Bonjour {{ current_user.username }} <i data-lucide="smile" class="text-purple-600"></i>
+            </h1>
+            <p class="text-gray-500 mt-1">Continue à construire de bonnes habitudes chaque jour.</p>
+        </div>
     </div>
 
-    <!-- Cartes -->
-
-    <div class="grid grid-cols-3 gap-6 mt-8">
-
-        <div class="bg-white rounded-3xl shadow-lg p-6">
-
-            <h3 class="text-gray-500">
-
-                Habitudes créées
-
-            </h3>
-
-            <h1 class="text-5xl font-bold text-purple-700 mt-3">
-
-                {{ total_habits }}
-
-            </h1>
-
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-purple-100 p-6 flex items-center justify-between">
+            <div>
+                <h3 class="text-gray-400 text-sm font-medium uppercase tracking-wider">Habitudes créées</h3>
+                <h1 class="text-4xl font-black text-purple-900 mt-2">{{ total_habits }}</h1>
+            </div>
+            <div class="p-3 bg-purple-50 rounded-xl text-purple-600">
+                <i data-lucide="layers" class="w-6 h-6"></i>
+            </div>
         </div>
 
-        <div class="bg-white rounded-3xl shadow-lg p-6">
-
-            <h3 class="text-gray-500">
-
-                Terminées aujourd'hui
-
-            </h3>
-
-            <h1 class="text-5xl font-bold text-green-500 mt-3">
-
-                {{ completed_today }}
-
-            </h1>
-
+        <div class="bg-white rounded-2xl shadow-sm border border-purple-100 p-6 flex items-center justify-between">
+            <div>
+                <h3 class="text-gray-400 text-sm font-medium uppercase tracking-wider">Terminées aujourd'hui</h3>
+                <h1 class="text-4xl font-black text-green-600 mt-2">{{ completed_today }}</h1>
+            </div>
+            <div class="p-3 bg-green-50 rounded-xl text-green-600">
+                <i data-lucide="check-square" class="w-6 h-6"></i>
+            </div>
         </div>
 
-        <div class="bg-white rounded-3xl shadow-lg p-6">
-
-            <h3 class="text-gray-500">
-
-                Streak actuel
-
-            </h3>
-
-            <h1 class="text-5xl font-bold text-orange-500 mt-3">
-
-                {{ streak }} <i class="fas fa-fire"></i>
-
-            </h1>
-
+        <div class="bg-white rounded-2xl shadow-sm border border-purple-100 p-6 flex items-center justify-between">
+            <div>
+                <h3 class="text-gray-400 text-sm font-medium uppercase tracking-wider">Streak actuel</h3>
+                <h1 class="text-4xl font-black text-orange-600 mt-2 flex items-center gap-2">
+                    {{ streak }}
+                </h1>
+            </div>
+            <div class="p-3 bg-orange-50 rounded-xl text-orange-500">
+                <i data-lucide="flame" class="w-6 h-6 animate-pulse"></i>
+            </div>
         </div>
-
     </div>
 
-    <!-- Calendrier -->
+    <!-- Section Calendrier et Citations/Conseils -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Colonne Calendrier (Légèrement réduit) -->
+        <div class="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-purple-100 p-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                <h2 class="text-xl font-bold text-purple-950 flex items-center gap-2">
+                    <i data-lucide="calendar" class="text-purple-600 w-5 h-5"></i> Calendrier de suivi
+                </h2>
+                <a href="{{ url_for('main.goal') }}" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 py-2 rounded-xl shadow-md shadow-purple-200 transition text-xs">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> Ajouter
+                </a>
+            </div>
 
-    <div class="mt-8">
-
-        <div class="flex justify-between items-center mb-4">
-
-            <h2 class="text-3xl font-bold text-purple-800">
-
-                Calendrier
-
-            </h2>
-
-            <a href="{{ url_for('main.goal') }}"
-               class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl shadow-lg">
-
-                + Ajouter des tâches
-
-            </a>
-
+            <div class="overflow-x-auto">
+                <div id="calendar" class="w-full max-w-lg mx-auto"></div>
+            </div>
         </div>
 
-        <div class="bg-white rounded-3xl shadow-xl p-5 inline-block">
-
-            <div id="calendar"></div>
-
+        <!-- ÉLÉMENT AJOUTÉ : Bloc unique pour Citations & Conseils -->
+        <div class="lg:col-span-5 bg-gradient-to-br from-purple-700 to-purple-600 rounded-2xl shadow-sm p-6 text-white flex flex-col justify-between">
+            <div class="space-y-4">
+                <div class="flex items-center gap-2 text-purple-300 font-bold tracking-wider text-xs uppercase">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+                    Inspiration & Conseil du jour
+                </div>
+                
+                <i data-lucide="quote" class="text-purple-400/30 w-10 h-10 mt-2"></i>
+                
+                <p class="text-base italic font-medium leading-relaxed text-purple-100">
+                    "Les petites disciplines répétées chaque jour avec constance mènent à de grandes victoires. Prends soin de tes habitudes, elles feront grandir ta vigne."
+                </p>
+            </div>
+            
+            <div class="mt-6 pt-4 border-t border-purple-700/50 flex items-center gap-2 text-xs text-purple-300 font-semibold">
+                <i data-lucide="lightbulb" class="text-amber-400 w-4 h-4 flex-shrink-0"></i>
+                <span>Astuce : Valide tes objectifs dès le matin pour garder le rythme !</span>
+            </div>
         </div>
 
     </div>
@@ -110,89 +93,25 @@
 </div>
 
 <style>
-
-#calendar{
-
-    width:380px;
-
-}
-
-.fc{
-
-    font-size:.75rem;
-
-}
-
-.fc .fc-toolbar-title{
-
-    font-size:1rem;
-    color:#6B21A8;
-    font-weight:bold;
-
-}
-
-.fc .fc-button{
-
-    background:#7C3AED !important;
-    border:none !important;
-    border-radius:8px !important;
-    font-size:.70rem !important;
-    padding:4px 8px !important;
-
-}
-
-.fc .fc-button:hover{
-
-    background:#6D28D9 !important;
-
-}
-
-.fc-daygrid-day-number{
-
-    font-size:.75rem;
-
-}
-
-.fc .fc-scrollgrid{
-
-    border-radius:12px;
-
-}
-
+    .fc { font-family: inherit; font-size: 0.8rem; }
+    .fc .fc-toolbar-title { font-size: 1rem; color: #6d28d9; font-weight: 700; }
+    .fc .fc-button { background: #7c3aed !important; border: none !important; border-radius: 10px !important; padding: 4px 10px !important; text-transform: capitalize; font-size: 0.8rem; }
+    .fc .fc-button:hover { background: #6d28d9 !important; }
+    .fc-theme-standard td, .fc-theme-standard th { border-color: #f3e8ff !important; }
 </style>
 
 <script>
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    let calendarEl = document.getElementById("calendar");
-
-    let calendar = new FullCalendar.Calendar(calendarEl, {
-
-        initialView: "dayGridMonth",
-
-        locale: "fr",
-
-        height: 280,
-
-        headerToolbar: {
-
-            left: "prev,next",
-
-            center: "title",
-
-            right: ""
-
-        },
-
-        events: []
-
+    document.addEventListener("DOMContentLoaded", function () {
+        let calendarEl = document.getElementById("calendar");
+        let calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: "dayGridMonth",
+            locale: "fr",
+            height: 310, /* Taille réduite */
+            headerToolbar: { left: "prev,next", center: "title", right: "" },
+            events: {{ events|tojson }}
+        });
+        calendar.render();
+        lucide.createIcons();
     });
-
-    calendar.render();
-
-});
-
 </script>
-
 {% endblock %}

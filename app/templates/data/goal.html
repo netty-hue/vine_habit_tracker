@@ -1,384 +1,330 @@
 {% extends "base.html" %}
-{% block title %}Mes Objectifs — HabitFlow{% endblock %}
+
+{% block titre %}Mes Objectifs — Vine Habit{% endblock %}
 
 {% block content %}
+<div class="max-w-4xl mx-auto space-y-10 pb-12">
 
-<h2 class="mb-4">Bonjour {{ current_user.username }}</h2>
-<script src="https://cdn.tailwindcss.com"></script>
-
-<div class="bg-gray-50 min-h-screen p-6">
-  <div class="max-w-2xl mx-auto">
-
-
-    <!-- HEADER -->
-    <div class="bg-gradient-to-r from-purple-700 to-purple-400 rounded-2xl p-8 mb-8 shadow-lg">
-      <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">Mes Objectifs 🌱</h1>
-      <p class="text-purple-200 text-sm md:text-base">
-        Chaque grand changement commence par un WHY clair.
-        Définis où tu veux aller, puis construis le chemin habitude par habitude.
-      </p>
+    <div class="relative overflow-hidden bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 rounded-3xl p-8 md:p-10 shadow-xl text-white">
+        <div class="absolute -right-10 -top-10 w-40 h-40 bg-purple-500/20 rounded-full blur-2xl"></div>
+        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-indigo-500/20 rounded-full blur-2xl"></div>
+        
+        <div class="relative z-10 max-w-2xl">
+            <span class="inline-flex items-center gap-1.5 bg-purple-500/30 text-purple-200 text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-md mb-4">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Écosystème de Réussite
+            </span>
+            <h1 class="text-3xl md:text-4xl font-black tracking-tight mb-3 flex items-center gap-3">
+                Mes Objectifs <i data-lucide="sprout" class="text-emerald-400 animate-pulse"></i>
+            </h1>
+            <p class="text-purple-100/90 text-sm md:text-base leading-relaxed font-medium">
+                Chaque grand changement commence par un <span class="text-yellow-300 font-bold">"WHY"</span> clair. Définis où tu veux aller, puis construis le chemin habitude par habitude.
+            </p>
+        </div>
     </div>
 
-
-    <!-- ================================================
-         SECTION 1 — CRÉER UN OBJECTIF
-    ================================================ -->
-    <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
-
-      <div class="flex items-center gap-3 mb-2">
-        <span class="bg-purple-100 text-purple-700 font-bold text-sm px-3 py-1 rounded-full">Étape 1</span>
-        <h2 class="text-lg font-bold text-gray-700">Ton objectif</h2>
-      </div>
-
-      <p class="text-gray-400 text-sm mb-1">
-        Un objectif est large et ambitieux — c'est ta destination finale.
-      </p>
-      <p class="text-gray-400 text-sm mb-5">
-        ✅ <span class="italic">"Toned body + good posture"</span> &nbsp;
-        ✅ <span class="italic">"Lancer mon entreprise"</span> &nbsp;
-        ❌ <span class="italic">"Faire du sport"</span> (trop vague)
-      </p>
-
-      <form method="POST" action="{{ url_for('main.create_goal') }}">
-
-        <!-- WHY -->
-        <div class="mb-4">
-          <label class="block text-sm font-semibold text-gray-600 mb-1">Quel est ton WHY ?</label>
-          <input type="text" name="goal_title" required
-            placeholder="Ex: Toned body + good posture"
-            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
-        </div>
-
-        <!-- Description -->
-        <div class="mb-4">
-          <label class="block text-sm font-semibold text-gray-600 mb-1">Pourquoi cet objectif est important pour toi ?</label>
-          <textarea name="goal_description" rows="2"
-            placeholder="Ex: Je veux me sentir bien dans mon corps et avoir plus d'énergie au quotidien..."
-            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100"></textarea>
-        </div>
-
-        <!-- Durée + limite tâches -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-
-          <!-- Court terme / Long terme -->
-          <div>
-            <label class="block text-sm font-semibold text-gray-600 mb-2">Type d'objectif</label>
-            <div class="flex gap-3">
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="goal_type" value="court_terme" checked
-                  class="accent-purple-600">
-                <span class="text-sm text-gray-600">Court terme</span>
-              </label>
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="goal_type" value="long_terme"
-                  class="accent-purple-600">
-                <span class="text-sm text-gray-600">Long terme</span>
-              </label>
+    <div class="space-y-8">
+        
+        <div class="bg-white rounded-2xl border border-purple-100/80 shadow-sm hover:shadow-md transition-shadow p-6 md:p-8">
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <span class="flex items-center justify-center bg-purple-600 text-white font-extrabold text-xs w-20 h-7 rounded-full uppercase tracking-wider shadow-sm">Étape 1</span>
+                    <h2 class="text-xl font-bold text-gray-900 tracking-tight">Définir ton objectif principal</h2>
+                </div>
+                <div class="flex items-center gap-2 bg-amber-50 border border-amber-100 px-4 py-2 rounded-xl text-xs text-amber-800 max-w-md">
+                    <span>💡 <strong>Destination :</strong> Un objectif doit être large et ambitieux. <span class="italic text-amber-700">"Lancer mon entreprise"</span>.</span>
+                </div>
             </div>
-          </div>
 
-          <!-- Limite de tâches par jour -->
-          <div>
-            <label class="block text-sm font-semibold text-gray-600 mb-1">
-              Limite de tâches / jour
-            </label>
-            <input type="number" name="goal_task_limit" min="1" max="20" value="5"
-              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
-            <p class="text-xs text-gray-400 mt-1">Pour éviter la surcharge. Recommandé : 3 à 5.</p>
-          </div>
+            <form method="POST" action="{{ url_for('main.create_goal') }}" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Quel est ton WHY ?</label>
+                        <div class="relative">
+                            <i data-lucide="target" class="absolute left-4 top-3.5 w-4 h-4 text-purple-400"></i>
+                            <input type="text" name="goal_title" required placeholder="Ex: Corps tonique et esprit sain"
+                                class="w-full pl-11 pr-4 py-3 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 bg-white transition">
+                        </div>
+                    </div>
 
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Pourquoi cet objectif est crucial ?</label>
+                        <div class="relative">
+                            <i data-lucide="heart" class="absolute left-4 top-3.5 w-4 h-4 text-purple-400"></i>
+                            <textarea name="goal_description" rows="1" placeholder="Ex: Pour retrouver de l'énergie au quotidien..."
+                                class="w-full pl-11 pr-4 py-3 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 bg-white transition"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Type d'objectif</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="flex items-center justify-center gap-2 p-3 bg-purple-50/30 border border-purple-100 rounded-xl cursor-pointer text-sm font-medium text-gray-700 hover:bg-purple-50 transition has-[:checked]:bg-purple-600 has-[:checked]:text-white has-[:checked]:border-purple-600">
+                                <input type="radio" name="goal_type" value="court_terme" checked class="sr-only">
+                                <i data-lucide="zap" class="w-4 h-4"></i> Court terme
+                            </label>
+                            <label class="flex items-center justify-center gap-2 p-3 bg-purple-50/30 border border-purple-100 rounded-xl cursor-pointer text-sm font-medium text-gray-700 hover:bg-purple-50 transition has-[:checked]:bg-purple-600 has-[:checked]:text-white has-[:checked]:border-purple-600">
+                                <input type="radio" name="goal_type" value="long_terme" class="sr-only">
+                                <i data-lucide="flag" class="w-4 h-4"></i> Long terme
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="block text-sm font-semibold text-gray-700">Limite de tâches / jour</label>
+                            <span class="text-[11px] text-gray-400">Conseillé : 3 à 5</span>
+                        </div>
+                        <div class="relative">
+                            <i data-lucide="sliders" class="absolute left-4 top-3.5 w-4 h-4 text-purple-400"></i>
+                            <input type="number" name="goal_task_limit" min="1" max="20" value="5"
+                                class="w-full pl-11 pr-4 py-3 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 bg-white transition">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-2">
+                    <button type="submit" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-xl text-sm transition-all shadow-md shadow-purple-200 hover:shadow-lg active:scale-[0.98]">
+                        Enregistrer l'objectif <i data-lucide="plus" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </form>
         </div>
 
-        <button type="submit"
-          class="bg-gradient-to-r from-purple-700 to-purple-500 text-white px-6 py-3 rounded-full font-semibold hover:opacity-90 transition text-sm">
-          Enregistrer mon objectif →
-        </button>
+        {% if goals_actifs %}
+        <div class="bg-white rounded-2xl border border-purple-100/80 shadow-sm hover:shadow-md transition-shadow p-6 md:p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="flex items-center justify-center bg-purple-600 text-white font-extrabold text-xs w-20 h-7 rounded-full uppercase tracking-wider shadow-sm">Étape 2</span>
+                <h2 class="text-xl font-bold text-gray-900 tracking-tight">Découper en habitudes quotidiennes</h2>
+            </div>
 
-      </form>
+            <form method="POST" action="{{ url_for('main.create_habit') }}" class="space-y-5">
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">Pour quel objectif ?</label>
+                    <div class="relative">
+                        <i data-lucide="check-square" class="absolute left-4 top-3.5 w-4 h-4 text-purple-400"></i>
+                        <select name="habit_goal_id" class="w-full pl-11 pr-10 py-3 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white appearance-none transition">
+                            {% for goal in goals_actifs %}
+                            <option value="{{ goal.id }}">{{ goal.title }}</option>
+                            {% endfor %}
+                        </select>
+                        <i data-lucide="chevron-down" class="absolute right-4 top-3.5 w-4 h-4 text-gray-400 pointer-events-none"></i>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Nom de l'habitude</label>
+                        <input type="text" name="habit_title" required placeholder="Ex: Séance de cardio"
+                            class="w-full px-4 py-3 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white transition">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Résultat attendu</label>
+                        <input type="text" name="habit_expected_result" placeholder="Ex: Tenir 30 min sans pause"
+                            class="w-full px-4 py-3 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white transition">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Jours planifiés</label>
+                        <input type="text" name="habit_schedule_days" placeholder="Ex: Lun, Mer, Ven"
+                            class="w-full px-4 py-3 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white transition">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Durée (minutes)</label>
+                        <input type="number" name="habit_duration" min="1" placeholder="Ex: 30"
+                            class="w-full px-4 py-3 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white transition">
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-2">
+                    <button type="submit" class="bg-gray-900 hover:bg-gray-800 text-white font-semibold px-6 py-3 rounded-xl text-sm transition-all shadow-md active:scale-[0.98]">
+                        Ajouter l'habitude
+                    </button>
+                </div>
+            </form>
+
+            {% if habits %}
+            <div class="mt-8 border-t border-purple-100 pt-6 space-y-3">
+                <h3 class="text-xs font-bold text-purple-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                    <i data-lucide="activity" class="w-3.5 h-3.5"></i> Habitudes actives
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {% for habit in habits %}
+                    <div class="group flex items-center justify-between p-4 bg-purple-50/20 hover:bg-purple-50/50 border border-purple-100/70 rounded-xl transition-all">
+                        <div class="space-y-1">
+                            <p class="text-sm font-semibold text-gray-900">{{ habit.title }}</p>
+                            <div class="flex items-center gap-2 text-xs text-gray-500">
+                                <span class="inline-flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i> {{ habit.schedule_days }}</span>
+                                <span>•</span>
+                                <span class="inline-flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> {{ habit.duration }} min</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
+                            <a href="{{ url_for('main.modifier_habitude', habit_id=habit.id) }}" class="p-1.5 text-purple-600 hover:bg-purple-100/50 rounded-lg transition" title="Modifier">
+                                <i data-lucide="edit-2" class="w-4 h-4"></i>
+                            </a>
+                            <a href="{{ url_for('main.supprimer_habitude', habit_id=habit.id) }}" class="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition" title="Supprimer">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if habits %}
+        <div class="bg-white rounded-2xl border border-purple-100/80 shadow-sm hover:shadow-md transition-shadow p-6 md:p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="flex items-center justify-center bg-purple-600 text-white font-extrabold text-xs w-20 h-7 rounded-full uppercase tracking-wider shadow-sm">Étape 3</span>
+                <h2 class="text-xl font-bold text-gray-900 tracking-tight">Actions du jour (Tâches)</h2>
+            </div>
+
+            <form method="POST" action="{{ url_for('main.goal') }}" class="space-y-5">
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">Quelle est l'action précise ?</label>
+                    <input type="text" name="titre" required placeholder="Ex: Faire 15 min de gainage léger"
+                        class="w-full px-4 py-3 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white transition">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Créneau horaire</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="flex items-center justify-center gap-2 p-2.5 bg-purple-50/30 border border-purple-100 rounded-xl cursor-pointer text-sm font-medium text-gray-700 hover:bg-purple-50 transition has-[:checked]:bg-purple-600 has-[:checked]:text-white has-[:checked]:border-purple-600">
+                                <input type="radio" name="task_creneau" value="matin" checked class="sr-only">
+                                🌅 Matin
+                            </label>
+                            <label class="flex items-center justify-center gap-2 p-2.5 bg-purple-50/30 border border-purple-100 rounded-xl cursor-pointer text-sm font-medium text-gray-700 hover:bg-purple-50 transition has-[:checked]:bg-purple-600 has-[:checked]:text-white has-[:checked]:border-purple-600">
+                                <input type="radio" name="task_creneau" value="soir" class="sr-only">
+                                🌙 Soir
+                            </label>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Date limite (optionnel)</label>
+                        <input type="date" name="task_deadline" class="w-full px-4 py-2.5 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white transition">
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-2">
+                    <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-xl text-sm transition-all shadow-md shadow-purple-200 active:scale-[0.98]">
+                        Planifier l'action
+                    </button>
+                </div>
+            </form>
+
+            {% if taches %}
+            <div class="mt-8 border-t border-purple-100 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-3">
+                    <p class="text-xs font-bold text-amber-600 uppercase tracking-wider flex items-center gap-1">🌅 Matin</p>
+                    <div class="space-y-2">
+                        {% for tache in taches if tache.creneau == 'matin' %}
+                        <div class="flex items-center justify-between p-3.5 bg-purple-50/10 border border-purple-100/60 rounded-xl transition hover:bg-white hover:shadow-sm">
+                            <span class="text-sm {{ 'line-through text-gray-400 font-normal' if tache.is_completed else 'text-gray-800 font-semibold' }}">{{ tache.title }}</span>
+                            <div class="flex items-center gap-3">
+                                <a href="{{ url_for('main.terminer_tache', tache_id=tache.id) }}" 
+                                   class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-bold border transition-colors {{ 'bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200' if tache.is_completed else 'bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-600 hover:text-white' }}">
+                                    {{ 'Rouvrir' if tache.is_completed else 'Fait ✓' }}
+                                </a>
+                                <a href="{{ url_for('main.supprimer_tache', tache_id=tache.id) }}" class="text-gray-400 hover:text-red-500 transition">
+                                    <i data-lucide="x" class="w-4 h-4"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% else %}
+                        <p class="text-xs text-gray-400 italic bg-gray-50/50 p-4 rounded-xl border border-dashed text-center">Aucune tâche planifiée ce matin.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <p class="text-xs font-bold text-indigo-600 uppercase tracking-wider flex items-center gap-1">🌙 Soir</p>
+                    <div class="space-y-2">
+                        {% for tache in taches if tache.creneau == 'soir' %}
+                        <div class="flex items-center justify-between p-3.5 bg-purple-50/10 border border-purple-100/60 rounded-xl transition hover:bg-white hover:shadow-sm">
+                            <span class="text-sm {{ 'line-through text-gray-400 font-normal' if tache.is_completed else 'text-gray-800 font-semibold' }}">{{ tache.title }}</span>
+                            <div class="flex items-center gap-3">
+                                <a href="{{ url_for('main.terminer_tache', tache_id=tache.id) }}" 
+                                   class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-bold border transition-colors {{ 'bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200' if tache.is_completed else 'bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-600 hover:text-white' }}">
+                                    {{ 'Rouvrir' if tache.is_completed else 'Fait ✓' }}
+                                </a>
+                                <a href="{{ url_for('main.supprimer_tache', tache_id=tache.id) }}" class="text-gray-400 hover:text-red-500 transition">
+                                    <i data-lucide="x" class="w-4 h-4"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% else %}
+                        <p class="text-xs text-gray-400 italic bg-gray-50/50 p-4 rounded-xl border border-dashed text-center">Aucune tâche planifiée ce soir.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
     </div>
 
-
-    <!-- ================================================
-         SECTION 2 — AJOUTER UNE HABITUDE
-         Visible seulement si un objectif existe
-    ================================================ -->
-    {% if goals_actifs %}
-    <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
-
-      <div class="flex items-center gap-3 mb-2">
-        <span class="bg-purple-100 text-purple-700 font-bold text-sm px-3 py-1 rounded-full">Étape 2</span>
-        <h2 class="text-lg font-bold text-gray-700">Tes habitudes</h2>
-      </div>
-
-      <p class="text-gray-400 text-sm mb-1">
-        Une habitude est une action répétée régulièrement pour atteindre ton objectif.
-        Elle se fait <strong>chaque jour</strong> — donc elle doit être réaliste.
-      </p>
-      <p class="text-gray-400 text-sm mb-5">
-        ✅ <span class="italic">"Sport (cardio + posture)"</span> &nbsp;
-        ❌ <span class="italic">"Aller à la salle 3h tous les jours"</span> (irréaliste)
-      </p>
-
-      <form method="POST" action="{{ url_for('main.create_habit') }}">
-
-        <!-- Objectif lié -->
-        <div class="mb-4">
-          <label class="block text-sm font-semibold text-gray-600 mb-1">Pour quel objectif ?</label>
-          <select name="habit_goal_id"
-            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400">
-            {% for goal in goals_actifs %}
-            <option value="{{ goal.id }}">{{ goal.title }}</option>
-            {% endfor %}
-          </select>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {% if goals_actifs %}
+        <div class="bg-white rounded-2xl border border-purple-100 p-6 shadow-sm">
+            <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i data-lucide="compass" class="w-5 h-5 text-purple-600"></i> Objectifs en cours
+            </h2>
+            <div class="space-y-3">
+                {% for goal in goals_actifs %}
+                <div class="p-4 bg-purple-50/20 border border-purple-100/60 rounded-xl space-y-2 hover:bg-purple-50/40 transition">
+                    <div>
+                        <p class="text-sm font-bold text-gray-900">{{ goal.title }}</p>
+                        <p class="text-xs text-gray-500 mt-0.5">{{ goal.description }}</p>
+                    </div>
+                    <div class="flex justify-between items-center pt-2 border-t border-purple-100/50">
+                        <span class="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 uppercase tracking-wide">
+                            {{ '🏁 Long terme' if goal.type == 'long_terme' else '⚡ Court terme' }}
+                        </span>
+                        <div class="flex gap-3 text-xs font-semibold">
+                            <a href="{{ url_for('main.archiver_goal', goal_id=goal.id) }}" class="text-gray-500 hover:text-purple-700 hover:underline">Archiver</a>
+                            <a href="{{ url_for('main.supprimer_goal', goal_id=goal.id) }}" class="text-red-400 hover:text-red-600 hover:underline">Supprimer</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
+        {% endif %}
 
-        <!-- Nom -->
-        <div class="mb-4">
-          <label class="block text-sm font-semibold text-gray-600 mb-1">Nom de l'habitude</label>
-          <input type="text" name="habit_title" required
-            placeholder="Ex: Sport, Lecture, Méditation..."
-            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
+        {% if goals_archives %}
+        <div class="bg-gray-50 border border-gray-200/80 rounded-2xl p-6">
+            <h2 class="text-lg font-bold text-gray-500 mb-4 flex items-center gap-2">
+                <i data-lucide="archive" class="w-5 h-5"></i> Objectifs passés
+            </h2>
+            <div class="space-y-2">
+                {% for goal in goals_archives %}
+                <div class="flex items-center justify-between p-3.5 bg-white border border-gray-200/60 rounded-xl shadow-2xs">
+                    <p class="text-sm text-gray-400 font-medium line-through decoration-gray-300">{{ goal.title }}</p>
+                    <a href="{{ url_for('main.supprimer_goal', goal_id=goal.id) }}" class="inline-flex items-center justify-center p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
         </div>
-
-        <!-- WHY de l'habitude -->
-        <div class="mb-4">
-          <label class="block text-sm font-semibold text-gray-600 mb-1">
-            Comment cette habitude t'aide à atteindre ton objectif ?
-          </label>
-          <input type="text" name="habit_why"
-            placeholder="Ex: Le sport améliore ma posture et me donne de l'énergie..."
-            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
-        </div>
-
-        <!-- Résultat attendu -->
-        <div class="mb-4">
-          <label class="block text-sm font-semibold text-gray-600 mb-1">Résultat attendu</label>
-          <input type="text" name="habit_expected_result"
-            placeholder="Ex: Perdre 5kg, Améliorer ma posture en 2 mois..."
-            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
-        </div>
-
-        <!-- Jours + durée -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
-          <div>
-            <label class="block text-sm font-semibold text-gray-600 mb-1">Jours</label>
-            <input type="text" name="habit_schedule_days"
-              placeholder="Ex: Lun, Mar, Mer, Jeu, Ven"
-              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
-          </div>
-          <div>
-            <label class="block text-sm font-semibold text-gray-600 mb-1">Durée (minutes)</label>
-            <input type="number" name="habit_duration" min="1"
-              placeholder="Ex: 30"
-              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
-          </div>
-        </div>
-
-        <button type="submit"
-          class="bg-gradient-to-r from-purple-700 to-purple-500 text-white px-6 py-3 rounded-full font-semibold hover:opacity-90 transition text-sm">
-          Ajouter cette habitude →
-        </button>
-
-      </form>
-
-      <!-- Liste des habitudes existantes -->
-      {% if habits %}
-      <div class="mt-6 border-t border-gray-100 pt-4">
-        <h3 class="text-sm font-semibold text-gray-500 mb-3">Habitudes ajoutées :</h3>
-        {% for habit in habits %}
-        <div class="flex items-center justify-between py-2 border-b border-gray-50">
-          <div>
-            <p class="text-sm font-medium text-gray-700">{{ habit.title }}</p>
-            <p class="text-xs text-gray-400">{{ habit.schedule_days }} · {{ habit.duration }} min</p>
-          </div>
-          <div class="flex gap-3">
-            <a href="{{ url_for('main.modifier_habitude', habit_id=habit.id) }}"
-               class="text-xs text-purple-500 hover:text-purple-700 font-medium">Modifier</a>
-            <a href="{{ url_for('main.supprimer_habitude', habit_id=habit.id) }}"
-               class="text-xs text-red-400 hover:text-red-600 font-medium">Supprimer</a>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-      {% endif %}
-
+        {% endif %}
     </div>
-    {% endif %}
 
-
-    <!-- ================================================
-         SECTION 3 — TÂCHES
-         Visible seulement si des habitudes existent
-    ================================================ -->
-    {% if habits %}
-    <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
-
-      <div class="flex items-center gap-3 mb-2">
-        <span class="bg-purple-100 text-purple-700 font-bold text-sm px-3 py-1 rounded-full">Étape 3</span>
-        <h2 class="text-lg font-bold text-gray-700">Tes tâches</h2>
-      </div>
-
-      <p class="text-gray-400 text-sm mb-1">
-        Une tâche est <strong>concrète, chiffrée et réaliste</strong>.
-        Elle découpe ton habitude en actions précises pour aujourd'hui.
-      </p>
-      <p class="text-gray-400 text-sm mb-1">
-        ✅ <span class="italic">"15 min cardio"</span>, 
-        <span class="italic">"10 reps push-ups"</span>, 
-        <span class="italic">"20 reps shoulder press"</span>
-      </p>
-      <p class="text-gray-400 text-sm mb-5">
-        ❌ <span class="italic">"400 push-ups"</span> (irréaliste) &nbsp;
-        ❌ <span class="italic">"Faire du sport"</span> (pas chiffré)
-      </p>
-
-      <form method="POST" action="{{ url_for('main.goal') }}">
-
-        <!-- Nom de la tâche -->
-        <div class="mb-4">
-          <label class="block text-sm font-semibold text-gray-600 mb-1">
-            Quelle est ta tâche ? (sois précis et réaliste)
-          </label>
-          <input type="text" name="titre" required
-            placeholder="Ex: 15 min cardio, 10 reps push-ups..."
-            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
-        </div>
-
-        <!-- Créneau Matin / Soir -->
-        <div class="mb-4">
-          <label class="block text-sm font-semibold text-gray-600 mb-2">Créneau</label>
-          <div class="flex gap-4">
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input type="radio" name="task_creneau" value="matin" checked
-                class="accent-purple-600">
-              <span class="text-sm text-gray-600">🌅 Matin</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input type="radio" name="task_creneau" value="soir"
-                class="accent-purple-600">
-              <span class="text-sm text-gray-600">🌙 Soir</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Date limite -->
-        <div class="mb-5">
-          <label class="block text-sm font-semibold text-gray-600 mb-1">Date limite (optionnel)</label>
-          <input type="date" name="task_deadline"
-            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
-        </div>
-
-        <button type="submit"
-          class="bg-gradient-to-r from-purple-700 to-purple-500 text-white px-6 py-3 rounded-full font-semibold hover:opacity-90 transition text-sm">
-          Ajouter cette tâche →
-        </button>
-
-      </form>
-
-      <!-- Liste des tâches -->
-      {% if taches %}
-      <div class="mt-6 border-t border-gray-100 pt-4">
-        <h3 class="text-sm font-semibold text-gray-500 mb-3">Tâches ajoutées :</h3>
-
-        <!-- Matin -->
-        <p class="text-xs font-semibold text-purple-400 mb-2">🌅 Matin</p>
-        {% for tache in taches if tache.creneau == 'matin' %}
-        <div class="flex items-center justify-between py-2 border-b border-gray-50">
-          <span class="text-sm {{ 'line-through text-gray-300' if tache.is_completed else 'text-gray-700' }}">
-            {{ tache.title }}
-          </span>
-          <div class="flex gap-3">
-            <a href="{{ url_for('main.terminer_tache', tache_id=tache.id) }}"
-               class="text-xs text-purple-500 hover:text-purple-700 font-medium">
-              {{ '↩ Rouvrir' if tache.is_completed else '✓ Fait' }}
-            </a>
-            <a href="{{ url_for('main.supprimer_tache', tache_id=tache.id) }}"
-               class="text-xs text-red-400 hover:text-red-600 font-medium">Supprimer</a>
-          </div>
-        </div>
-        {% else %}
-        <p class="text-xs text-gray-300 mb-3">Aucune tâche le matin.</p>
-        {% endfor %}
-
-        <!-- Soir -->
-        <p class="text-xs font-semibold text-purple-400 mt-4 mb-2">🌙 Soir</p>
-        {% for tache in taches if tache.creneau == 'soir' %}
-        <div class="flex items-center justify-between py-2 border-b border-gray-50">
-          <span class="text-sm {{ 'line-through text-gray-300' if tache.is_completed else 'text-gray-700' }}">
-            {{ tache.title }}
-          </span>
-          <div class="flex gap-3">
-            <a href="{{ url_for('main.terminer_tache', tache_id=tache.id) }}"
-               class="text-xs text-purple-500 hover:text-purple-700 font-medium">
-              {{ '↩ Rouvrir' if tache.is_completed else '✓ Fait' }}
-            </a>
-            <a href="{{ url_for('main.supprimer_tache', tache_id=tache.id) }}"
-               class="text-xs text-red-400 hover:text-red-600 font-medium">Supprimer</a>
-          </div>
-        </div>
-        {% else %}
-        <p class="text-xs text-gray-300 mb-3">Aucune tâche le soir.</p>
-        {% endfor %}
-
-      </div>
-      {% endif %}
-
-    </div>
-    {% endif %}
-
-
-    <!-- ================================================
-         SECTION 4 — OBJECTIFS ACTIFS
-    ================================================ -->
-    {% if goals_actifs %}
-    <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
-      <h2 class="text-lg font-bold text-gray-700 mb-4">Objectifs en cours 🎯</h2>
-
-      {% for goal in goals_actifs %}
-      <div class="flex items-start justify-between py-3 border-b border-gray-50">
-        <div>
-          <p class="text-sm font-semibold text-gray-700">{{ goal.title }}</p>
-          <p class="text-xs text-gray-400">{{ goal.description }}</p>
-          <span class="text-xs {{ 'text-purple-500' if goal.type == 'long_terme' else 'text-blue-400' }}">
-            {{ '🏁 Long terme' if goal.type == 'long_terme' else '⚡ Court terme' }}
-          </span>
-        </div>
-        <div class="flex gap-3 ml-4">
-          <a href="{{ url_for('main.archiver_goal', goal_id=goal.id) }}"
-             class="text-xs text-gray-400 hover:text-gray-600 font-medium">Archiver</a>
-          <a href="{{ url_for('main.supprimer_goal', goal_id=goal.id) }}"
-             class="text-xs text-red-400 hover:text-red-600 font-medium">Supprimer</a>
-        </div>
-      </div>
-      {% endfor %}
-
-    </div>
-    {% endif %}
-
-
-    <!-- ================================================
-         SECTION 5 — OBJECTIFS ARCHIVÉS
-    ================================================ -->
-    {% if goals_archives %}
-    <div class="bg-gray-100 rounded-2xl p-6 mb-6">
-      <h2 class="text-lg font-bold text-gray-400 mb-4">Objectifs passés 📦</h2>
-
-      {% for goal in goals_archives %}
-      <div class="flex items-start justify-between py-3 border-b border-gray-200">
-        <div>
-          <p class="text-sm font-semibold text-gray-400 line-through">{{ goal.title }}</p>
-          <span class="text-xs text-gray-400">Archivé</span>
-        </div>
-        <a href="{{ url_for('main.supprimer_goal', goal_id=goal.id) }}"
-           class="text-xs text-red-300 hover:text-red-500 font-medium ml-4">Supprimer</a>
-      </div>
-      {% endfor %}
-
-    </div>
-    {% endif %}
-
-
-  </div>
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+    });
+</script>
 {% endblock %}
