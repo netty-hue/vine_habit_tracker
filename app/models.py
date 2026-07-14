@@ -229,12 +229,27 @@ class TodoItem(db.Model):
         default=False
     )
 
+    # Date de création de la tâche
     created_at = db.Column(
         db.DateTime,
         default=datetime.utcnow
     )
-    creneau  = db.Column(db.String(10), default='matin')
-    deadline = db.Column(db.Date, nullable=True)
+
+    # Date de validation de la tâche
+    completed_at = db.Column(
+        db.DateTime,
+        nullable=True
+    )
+
+    creneau = db.Column(
+        db.String(10),
+        default='matin'
+    )
+
+    deadline = db.Column(
+        db.Date,
+        nullable=True
+    )
 
     def __repr__(self):
         return f"<TodoItem {self.title}>"

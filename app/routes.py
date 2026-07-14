@@ -2,9 +2,10 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 
 from app import db
-from app.models import User, TodoItem, Goal, Habit
+from app.models import User, TodoItem, Goal, Habit, HabitLog, DailyProgress
 from app.forms import InscriptionForm, ConnexionForm, TacheForm
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
+from sqlalchemy import func
 
 main = Blueprint("main", __name__)
 
@@ -101,20 +102,82 @@ def logout():
 @main.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template("data/dashboard.html",
-        current_streak=0,
-        best_streak=0,
-        month_completion_rate=0,
-        log_data={},
+    today = datetime.utcnow().date()
+    start_of_month = today.replace(day=1)
 
-        # last 30 days — empty for now, real data comes after check-in is built
-        daily_rates={},
+    # --- KPI 1 & 2 : Séries (Directement depuis l'User et ses habitudes)
+    current_streak = current_user.current_streak or 0
+    # On récupère le record max parmi toutes les habitudes de l'utilisateur
+    best_habit_streak = db.session.query(func.max(Habit.max_streak)).filter_by(user_id=current_user.id).scalar() or 0
 
-        # 
-        monthly_rates={
-            "Jan": 0, "Feb": 0, "Mar": 0,
-            "Apr": 0, "May": 0, "Jun": 0
-        }
+    # --- KPI 3 : Taux de complétion du mois en cours (via DailyProgress)
+    monthly_progress_records = DailyProgress.query.filter(
+        DailyProgress.user_id == current_user.id,
+        DailyProgress.date >= start_of_month
+    ).all()
+    
+    if monthly_progress_records:
+        month_completion_rate = round(sum(r.completion_rate for r in monthly_progress_records) / len(monthly_progress_records))
+    else:
+        month_completion_rate = 0
+
+    # --- KPI Extra : Productivité To-Do (Tâches réalisées)
+    total_todos = TodoItem.query.filter_by(user_id=current_user.id).count()
+    completed_todos = TodoItem.query.filter_by(user_id=current_user.id, is_completed=True).count()
+    todo_completion_rate = round((completed_todos / total_todos) * 100) if total_todos > 0 else 0
+
+    # --- HEATMAP DATA (HabitLog des 365 derniers jours)
+    one_year_ago = today - timedelta(days=364)
+    logs = db.session.query(
+        func.date(HabitLog.date_completed).label('date'),
+        func.count(HabitLog.id).label('count')
+    ).join(Habit).filter(
+        Habit.user_id == current_user.id,
+        HabitLog.date_completed >= one_year_ago
+    ).group_by(func.date(HabitLog.date_completed)).all()
+
+    log_data = {str(log.date): log.count for log in logs}
+
+    # --- LINE CHART DATA (Progression des 30 derniers jours via DailyProgress)
+    last_30_days = [today - timedelta(days=i) for i in range(29, -1, -1)]
+    daily_rates = {}
+    
+    # On pré-remplit à 0 pour éviter les trous dans le graphique
+    for d in last_30_days:
+        daily_rates[d.strftime('%d %b')] = 0
+
+    progress_30_days = DailyProgress.query.filter(
+        DailyProgress.user_id == current_user.id,
+        DailyProgress.date >= today - timedelta(days=29)
+    ).order_by(DailyProgress.date.asc()).all()
+
+    for p in progress_30_days:
+        daily_rates[p.date.strftime('%d %b')] = round(p.completion_rate)
+
+    # --- BAR CHART DATA (6 derniers mois via DailyProgress)
+    monthly_rates = {}
+    for i in range(5, -1, -1):
+        # On remonte de x mois
+        first_day_of_target_month = (today.replace(day=1) - timedelta(days=i*30)).replace(day=1)
+        month_name = first_day_of_target_month.strftime('%b')
+        
+        # Moyenne du taux de complétion pour ce mois cible
+        avg_rate = db.session.query(func.avg(DailyProgress.completion_rate)).filter(
+            DailyProgress.user_id == current_user.id,
+            func.strftime('%Y-%m', DailyProgress.date) == first_day_of_target_month.strftime('%Y-%m')
+        ).scalar()
+        
+        monthly_rates[month_name] = round(avg_rate) if avg_rate is not None else 0
+
+    return render_template(
+        "data/dashboard.html",
+        current_streak=current_streak,
+        best_streak=best_habit_streak,
+        month_completion_rate=month_completion_rate,
+        todo_completion_rate=todo_completion_rate, # Nouveau KPI envoyé au template
+        log_data=log_data,
+        daily_rates=daily_rates,
+        monthly_rates=monthly_rates
     )
 
 # ── GOALS ────────────────────────────────────────────────────────
@@ -159,11 +222,33 @@ def terminer_tache(tache_id):
         flash("Action non autorisée.", "danger")
         return redirect(url_for("main.goal"))
 
-    tache.is_completed = True
+    # Basculer l'état de la tâche
+    tache.is_completed = not tache.is_completed
+
+    if tache.is_completed:
+        tache.completed_at = datetime.utcnow()
+        flash("Tâche terminée !", "success")
+    else:
+        tache.completed_at = None
+        flash("Tâche remise en cours.", "info")
 
     db.session.commit()
 
-    flash("Tâche terminée !", "success")
+    return redirect(url_for("main.goal"))
+
+@main.route("/tache/<int:tache_id>/supprimer")
+@login_required
+def supprimer_tache(tache_id):
+    tache = TodoItem.query.get_or_404(tache_id)
+
+    if tache.user_id != current_user.id:
+        flash("Action non autorisée.", "danger")
+        return redirect(url_for("main.goal"))
+
+    db.session.delete(tache)
+    db.session.commit()
+
+    flash("Tâche supprimée.", "success")
 
     return redirect(url_for("main.goal"))
 
@@ -286,21 +371,8 @@ def goal():
         habits=habits
     )
 
-@main.route("/tache/<int:tache_id>/supprimer")
-@login_required
-def supprimer_tache(tache_id):
-    tache = TodoItem.query.get_or_404(tache_id)
 
-    if tache.user_id != current_user.id:
-        flash("Action non autorisée.", "danger")
-        return redirect(url_for("main.goal"))
 
-    db.session.delete(tache)
-    db.session.commit()
-
-    flash("Tâche supprimée.", "success")
-
-    return redirect(url_for("main.goal"))
 
 # ---------------- SETTINGS ----------------
 
@@ -340,27 +412,56 @@ def settings():
 
 # ---------------- HOME ----------------
 
-from datetime import date
+from datetime import date, timedelta
 
 @main.route("/home")
 @login_required
 def home():
 
     habits = Habit.query.filter_by(user_id=current_user.id).all()
-
     total_habits = len(habits)
+
+    today = date.today()
+
+    # Toutes les tâches de l'utilisateur
+    tasks = TodoItem.query.filter_by(user_id=current_user.id).all()
+
+    # Nombre de tâches terminées aujourd'hui
     completed_today = 0
+    dates = set()
+
+    for task in tasks:
+        if task.is_completed and task.completed_at:
+            completed_date = task.completed_at.date()
+            dates.add(completed_date)
+
+            if completed_date == today:
+                completed_today += 1
+
+    # Calcul du streak
     streak = 0
+    current_day = today
 
-    today = date.today().strftime("%Y-%m-%d")
+    while current_day in dates:
+        streak += 1
+        current_day -= timedelta(days=1)
 
+    # Événements du calendrier
     events = []
 
-    for habit in habits:
+    for task in tasks:
+
+        # Date à afficher dans le calendrier
+        if task.deadline:
+            event_date = task.deadline
+        else:
+            event_date = task.created_at.date()
+
         events.append({
-            "title": habit.title,   # ou habit.name selon ton modèle
-            "start": today,
-            "allDay": True
+            "title": task.title,
+            "start": event_date.strftime("%Y-%m-%d"),
+            "allDay": True,
+            "color": "#22c55e" if task.is_completed else "#8b5cf6"
         })
 
     return render_template(

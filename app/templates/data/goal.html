@@ -17,7 +17,7 @@
                 Mes Objectifs <i data-lucide="sprout" class="text-emerald-400 animate-pulse"></i>
             </h1>
             <p class="text-purple-100/90 text-sm md:text-base leading-relaxed font-medium">
-                Chaque grand changement commence par un <span class="text-yellow-300 font-bold">"WHY"</span> clair. Définis où tu veux aller, puis construis le chemin habitude par habitude.
+                Chaque grand changement commence par un <span class="text-yellow-300 font-bold">"OBJECTIF"</span> clair. Définis où tu veux aller, puis construis le chemin habitude par habitude.
             </p>
         </div>
     </div>
@@ -31,14 +31,14 @@
                     <h2 class="text-xl font-bold text-gray-900 tracking-tight">Définir ton objectif principal</h2>
                 </div>
                 <div class="flex items-center gap-2 bg-amber-50 border border-amber-100 px-4 py-2 rounded-xl text-xs text-amber-800 max-w-md">
-                    <span>💡 <strong>Destination :</strong> Un objectif doit être large et ambitieux. <span class="italic text-amber-700">"Lancer mon entreprise"</span>.</span>
+                    <span class="flex items-center gap-1.5"><i data-lucide="lightbulb" class="w-4 h-4 text-amber-600 shrink-0"></i> <strong>Destination :</strong> Un objectif doit être large et ambitieux. <span class="italic text-amber-700">"Lancer mon entreprise"</span>.</span>
                 </div>
             </div>
 
             <form method="POST" action="{{ url_for('main.create_goal') }}" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">Quel est ton WHY ?</label>
+                        <label class="block text-sm font-semibold text-gray-700">Quel est ton Objectif ?</label>
                         <div class="relative">
                             <i data-lucide="target" class="absolute left-4 top-3.5 w-4 h-4 text-purple-400"></i>
                             <input type="text" name="goal_title" required placeholder="Ex: Corps tonique et esprit sain"
@@ -198,11 +198,11 @@
                         <div class="grid grid-cols-2 gap-3">
                             <label class="flex items-center justify-center gap-2 p-2.5 bg-purple-50/30 border border-purple-100 rounded-xl cursor-pointer text-sm font-medium text-gray-700 hover:bg-purple-50 transition has-[:checked]:bg-purple-600 has-[:checked]:text-white has-[:checked]:border-purple-600">
                                 <input type="radio" name="task_creneau" value="matin" checked class="sr-only">
-                                🌅 Matin
+                                <i data-lucide="sunrise" class="w-4 h-4"></i> Matin
                             </label>
                             <label class="flex items-center justify-center gap-2 p-2.5 bg-purple-50/30 border border-purple-100 rounded-xl cursor-pointer text-sm font-medium text-gray-700 hover:bg-purple-50 transition has-[:checked]:bg-purple-600 has-[:checked]:text-white has-[:checked]:border-purple-600">
                                 <input type="radio" name="task_creneau" value="soir" class="sr-only">
-                                🌙 Soir
+                                <i data-lucide="moon" class="w-4 h-4"></i> Soir
                             </label>
                         </div>
                     </div>
@@ -222,7 +222,7 @@
             {% if taches %}
             <div class="mt-8 border-t border-purple-100 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-3">
-                    <p class="text-xs font-bold text-amber-600 uppercase tracking-wider flex items-center gap-1">🌅 Matin</p>
+                    <p class="text-xs font-bold text-amber-600 uppercase tracking-wider flex items-center gap-1.5"><i data-lucide="sunrise" class="w-4 h-4"></i> Matin</p>
                     <div class="space-y-2">
                         {% for tache in taches if tache.creneau == 'matin' %}
                         <div class="flex items-center justify-between p-3.5 bg-purple-50/10 border border-purple-100/60 rounded-xl transition hover:bg-white hover:shadow-sm">
@@ -244,7 +244,7 @@
                 </div>
 
                 <div class="space-y-3">
-                    <p class="text-xs font-bold text-indigo-600 uppercase tracking-wider flex items-center gap-1">🌙 Soir</p>
+                    <p class="text-xs font-bold text-indigo-600 uppercase tracking-wider flex items-center gap-1.5"><i data-lucide="moon" class="w-4 h-4"></i> Soir</p>
                     <div class="space-y-2">
                         {% for tache in taches if tache.creneau == 'soir' %}
                         <div class="flex items-center justify-between p-3.5 bg-purple-50/10 border border-purple-100/60 rounded-xl transition hover:bg-white hover:shadow-sm">
@@ -285,8 +285,8 @@
                         <p class="text-xs text-gray-500 mt-0.5">{{ goal.description }}</p>
                     </div>
                     <div class="flex justify-between items-center pt-2 border-t border-purple-100/50">
-                        <span class="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 uppercase tracking-wide">
-                            {{ '🏁 Long terme' if goal.type == 'long_terme' else '⚡ Court terme' }}
+                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 uppercase tracking-wide">
+                            {% if goal.type == 'long_terme' %}<i data-lucide="flag" class="w-3 h-3"></i> Long terme{% else %}<i data-lucide="zap" class="w-3 h-3"></i> Court terme{% endif %}
                         </span>
                         <div class="flex gap-3 text-xs font-semibold">
                             <a href="{{ url_for('main.archiver_goal', goal_id=goal.id) }}" class="text-gray-500 hover:text-purple-700 hover:underline">Archiver</a>

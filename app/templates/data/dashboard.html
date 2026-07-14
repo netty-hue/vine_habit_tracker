@@ -5,82 +5,115 @@
 {% block content %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="space-y-8">
+<div class="max-w-7xl mx-auto space-y-8 px-4 sm:px-6 lg:px-8 py-6">
 
-    <div class="bg-gradient-to-r from-purple-800 to-purple-600 rounded-3xl p-8 shadow-xl text-white">
-        <h1 class="text-3xl font-black mb-1">Suivi de tes Habitudes</h1>
-        <p class="text-purple-200 text-sm">Visualise tes efforts et garde le rythme chaque jour.</p>
+    <div class="bg-white rounded-3xl p-8 shadow-sm border border-purple-100/80">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-purple-700 tracking-tight mb-2">Suivi de tes Habitudes</h1>
+                <p class="text-gray-500 text-sm sm:text-base font-medium max-w-xl">Visualise tes efforts, analyse ta régularité et garde le rythme jour après jour.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="{{ url_for('main.goal') }}" class="inline-flex items-center gap-2 bg-purple-600 text-white hover:bg-purple-700 font-bold px-5 py-3 rounded-2xl text-sm transition-all duration-200 transform hover:-translate-y-0.5 shadow-lg shadow-purple-200">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Nouvel Objectif
+                </a>
+                <a href="{{ url_for('main.settings') }}" class="inline-flex items-center gap-2 bg-purple-50 border border-purple-100 text-purple-600 hover:bg-purple-100 font-semibold px-5 py-3 rounded-2xl text-sm transition-all duration-200">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                </a>
+            </div>
+        </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white rounded-2xl shadow-sm border-l-4 border-purple-700 p-6">
-            <p class="text-gray-400 text-xs font-semibold uppercase tracking-wider">Série Actuelle</p>
-            <p class="text-4xl font-black text-purple-900 mt-2">{{ current_streak }} <span class="text-sm font-normal text-gray-500">jours consécutifs</span></p>
-            <p class="text-orange-500 text-xs font-medium mt-1 flex items-center gap-1">Tu es en feu ! 🔥</p>
-        </div>
-
-        <div class="bg-white rounded-2xl shadow-sm border-l-4 border-purple-400 p-6">
-            <p class="text-gray-400 text-xs font-semibold uppercase tracking-wider">Meilleure Série</p>
-            <p class="text-4xl font-black text-purple-700 mt-2">{{ best_streak }} <span class="text-sm font-normal text-gray-500">jours max</span></p>
-            <p class="text-purple-400 text-xs font-medium mt-1 flex items-center gap-1">Record personnel 🏆</p>
-        </div>
-
-        <div class="bg-white rounded-2xl shadow-sm border-l-4 border-purple-200 p-6">
-            <p class="text-gray-400 text-xs font-semibold uppercase tracking-wider">Ce Mois-ci</p>
-            <p class="text-4xl font-black text-gray-800 mt-2">{{ month_completion_rate }}%</p>
-            <p class="text-gray-400 text-xs font-medium mt-1">Taux de réussite global 📅</p>
-        </div>
-    </div>
-
-    <div class="bg-white rounded-2xl shadow-sm border border-purple-100 p-6">
-        <h2 class="text-lg font-bold text-purple-950 mb-4 flex items-center gap-2">
-            <i data-lucide="grid" class="w-5 h-5 text-purple-600"></i> Activité cette année
-        </h2>
-        <div class="overflow-x-auto">
-            <div id="heatmap" class="grid grid-flow-col gap-1 min-w-[600px]" style="grid-template-rows: repeat(7, 12px);"></div>
-        </div>
-        <div class="flex items-center justify-end gap-2 mt-4 text-xs text-gray-400">
-            <span>Moins</span>
-            <div class="w-3 h-3 rounded bg-gray-200"></div>
-            <div class="w-3 h-3 rounded bg-purple-200"></div>
-            <div class="w-3 h-3 rounded bg-purple-400"></div>
-            <div class="w-3 h-3 rounded bg-purple-700"></div>
-            <span>Plus</span>
-        </div>
-    </div>
-
-    <div class="bg-white rounded-2xl shadow-sm border border-purple-100 p-6 space-y-8">
-        <div>
-            <h2 class="text-lg font-bold text-purple-950 mb-1">Analyses avancées</h2>
-            <p class="text-gray-400 text-sm">Évolution de ton taux de complétion (%)</p>
-        </div>
-
-        <div class="space-y-6">
-            <div>
-                <h3 class="text-xs font-bold text-purple-600 uppercase tracking-wider mb-3">Progression — 30 derniers jours</h3>
-                <div class="max-h-64">
-                    <canvas id="lineChart" height="100"></canvas>
+        
+        <div class="bg-white rounded-2xl shadow-sm border border-purple-100/80 p-6 hover:shadow-md transition duration-200">
+            <div class="flex items-center justify-between">
+                <p class="text-gray-400 text-xs font-bold uppercase tracking-wider">Série de Jours Actuelle</p>
+                <div class="p-2 bg-orange-50 rounded-xl text-orange-500">
+                    <span class="text-lg">🔥</span>
                 </div>
             </div>
+            <div class="mt-4">
+                <p class="text-4xl font-black text-gray-900">{{ current_streak }} <span class="text-sm font-medium text-gray-500">jours d'affilée</span></p>
+                <p class="text-xs text-gray-550 mt-2 flex items-center gap-1">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-orange-500"></i> Tu es en plein élan ! Ne lâche rien.
+                </p>
+            </div>
+        </div>
 
-            <div class="border-t border-purple-50"></div>
-
-            <div>
-                <h3 class="text-xs font-bold text-purple-600 uppercase tracking-wider mb-3">Distribution Mensuelle — 6 derniers mois</h3>
-                <div class="max-h-64">
-                    <canvas id="barChart" height="100"></canvas>
+        <div class="bg-white rounded-2xl shadow-sm border border-purple-100/80 p-6 hover:shadow-md transition duration-200">
+            <div class="flex items-center justify-between">
+                <p class="text-gray-400 text-xs font-bold uppercase tracking-wider">Taux de Réussite Mensuel</p>
+                <div class="p-2 bg-purple-50 rounded-xl text-purple-600">
+                    <i data-lucide="calendar" class="w-5 h-5"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <p class="text-4xl font-black text-purple-600">{{ month_completion_rate }}%</p>
+                <div class="w-full bg-purple-50 rounded-full h-1.5 mt-3">
+                    <div class="bg-purple-600 h-1.5 rounded-full" style="width: {{ month_completion_rate }}%"></div>
                 </div>
             </div>
         </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-purple-100/80 p-6 hover:shadow-md transition duration-200">
+            <div class="flex items-center justify-between">
+                <p class="text-gray-400 text-xs font-bold uppercase tracking-wider">Productivité To-Do</p>
+                <div class="p-2 bg-emerald-50 rounded-xl text-emerald-600">
+                    <i data-lucide="check-square" class="w-5 h-5"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <p class="text-4xl font-black text-emerald-600">{{ todo_completion_rate }}%</p>
+                <p class="text-xs text-gray-500 mt-2">
+                    Pourcentage de vos tâches résolues par rapport au total.
+                </p>
+            </div>
+        </div>
+
     </div>
 
-    <div class="flex items-center gap-4">
-        <a href="{{ url_for('main.goal') }}" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-xl text-sm transition shadow-md shadow-purple-100">
-            <i data-lucide="plus" class="w-4 h-4"></i> Nouvel Objectif
-        </a>
-        <a href="{{ url_for('main.settings') }}" class="inline-flex items-center gap-2 bg-white border border-purple-200 text-purple-700 hover:bg-purple-50 font-semibold px-6 py-3 rounded-xl text-sm transition">
-            <i data-lucide="settings" class="w-4 h-4"></i> Paramètres
-        </a>
+    <div class="bg-white rounded-2xl shadow-sm border border-purple-100/80 p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <i data-lucide="grid" class="w-5 h-5 text-purple-600"></i> Activité cette année
+            </h2>
+            <div class="flex items-center gap-1.5 text-xs text-gray-400">
+                <span>Moins</span>
+                <div class="w-3 h-3 rounded bg-gray-100"></div>
+                <div class="w-3 h-3 rounded bg-purple-100"></div>
+                <div class="w-3 h-3 rounded bg-purple-400"></div>
+                <div class="w-3 h-3 rounded bg-purple-600"></div>
+                <span>Plus</span>
+            </div>
+        </div>
+        <div class="overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-purple-200">
+            <div id="heatmap" class="grid grid-flow-col gap-[3px] min-w-[720px] justify-start" style="grid-template-rows: repeat(7, 12px);"></div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <div class="bg-white rounded-2xl shadow-sm border border-purple-100/80 p-6 space-y-4">
+            <div>
+                <h3 class="text-sm font-bold text-gray-900">Progression quotidienne</h3>
+                <p class="text-xs text-gray-400">Taux de complétion des 30 derniers jours</p>
+            </div>
+            <div class="h-64">
+                <canvas id="lineChart"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-purple-100/80 p-6 space-y-4">
+            <div>
+                <h3 class="text-sm font-bold text-gray-900">Performances mensuelles</h3>
+                <p class="text-xs text-gray-400">Évolution globale sur les 6 derniers mois</p>
+            </div>
+            <div class="h-64">
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+
     </div>
 
 </div>
@@ -91,12 +124,12 @@
     const dailyRates   = {{ daily_rates | tojson }};
     const monthlyRates = {{ monthly_rates | tojson }};
 
-    // ── HEATMAP BUILDER ──────────────────────────────────────
+    // ── HEATMAP BUILDER ──
     function getColor(count) {
-        if (count === 0) return 'bg-gray-200';
-        if (count === 1) return 'bg-purple-200';
+        if (count === 0) return 'bg-gray-100';
+        if (count === 1) return 'bg-purple-100';
         if (count === 2) return 'bg-purple-400';
-        return 'bg-purple-700';
+        return 'bg-purple-600';
     }
 
     function buildHeatmap() {
@@ -110,7 +143,7 @@
             const key = current.toISOString().split('T')[0];
             const count = logData[key] || 0;
             const cell = document.createElement('div');
-            cell.className = `w-3 h-3 rounded-sm ${getColor(count)}`;
+            cell.className = `w-[11px] h-[11px] rounded-[2px] transition-colors duration-150 hover:ring-2 hover:ring-purple-400 hover:ring-offset-1 ${getColor(count)}`;
             cell.title = `${current.toLocaleDateString('fr-FR')} — ${count} habitude(s)`;
             container.appendChild(cell);
             current.setDate(current.getDate() + 1);
@@ -122,10 +155,35 @@
     // ── CHARTS GENERATION ────────────────────────────────────
     const purpleGradient = (ctx) => {
         const gradient = ctx.createLinearGradient(0, 0, 0, 200);
-        gradient.addColorStop(0, 'rgba(124, 58, 237, 0.3)');
-        gradient.addColorStop(1, 'rgba(124, 58, 237, 0.0)');
+        gradient.addColorStop(0, 'rgba(147, 51, 234, 0.25)');
+        gradient.addColorStop(1, 'rgba(147, 51, 234, 0.0)');
         return gradient;
     };
+
+    const getChartOptions = () => ({
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: { 
+                min: 0, 
+                max: 100, 
+                grid: { color: 'rgba(156, 163, 175, 0.1)' },
+                ticks: { 
+                    callback: v => v + '%',
+                    color: 'rgba(156, 163, 175, 0.8)',
+                    font: { size: 10 }
+                } 
+            },
+            x: {
+                grid: { display: false },
+                ticks: { 
+                    color: 'rgba(156, 163, 175, 0.8)',
+                    font: { size: 10 }
+                }
+            }
+        },
+        plugins: { legend: { display: false } }
+    });
 
     // Line Chart
     const lineCtx = document.getElementById('lineChart').getContext('2d');
@@ -135,22 +193,16 @@
             labels: Object.keys(dailyRates),
             datasets: [{
                 data: Object.values(dailyRates),
-                borderColor: '#7c3aed',
+                borderColor: '#9333ea',
                 backgroundColor: purpleGradient(lineCtx),
                 borderWidth: 2,
                 pointRadius: 2,
+                pointHoverRadius: 5,
                 fill: true,
-                tension: 0.3
+                tension: 0.35
             }]
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: { min: 0, max: 100, ticks: { callback: v => v + '%' } }
-            },
-            plugins: { legend: { display: false } }
-        }
+        options: getChartOptions()
     });
 
     // Bar Chart
@@ -161,18 +213,13 @@
             labels: Object.keys(monthlyRates),
             datasets: [{
                 data: Object.values(monthlyRates),
-                backgroundColor: 'rgba(124, 58, 237, 0.7)',
-                borderRadius: 4
+                backgroundColor: 'rgba(147, 51, 234, 0.8)',
+                hoverBackgroundColor: '#9333ea',
+                borderRadius: 6,
+                borderSkipped: false
             }]
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: { min: 0, max: 100, ticks: { callback: v => v + '%' } }
-            },
-            plugins: { legend: { display: false } }
-        }
+        options: getChartOptions()
     });
 
     document.addEventListener("DOMContentLoaded", function() {
