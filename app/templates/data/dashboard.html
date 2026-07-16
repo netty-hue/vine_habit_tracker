@@ -36,7 +36,14 @@
             <div class="mt-4">
                 <p class="text-4xl font-black text-gray-900">{{ current_streak }} <span class="text-sm font-medium text-gray-500">jours d'affilée</span></p>
                 <p class="text-xs text-gray-550 mt-2 flex items-center gap-1">
-                    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-orange-500"></i> Tu es en plein élan ! Ne lâche rien.
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-orange-500"></i>
+                    {% if current_streak == 0 %}
+                        Commence aujourd'hui — chaque expert a été débutant.
+                    {% elif current_streak < 7 %}
+                        Belle lancée ! Continue sur ta lancée.
+                    {% else %}
+                        Tu es en plein élan ! Ne lâche rien.
+                    {% endif %}
                 </p>
             </div>
         </div>
