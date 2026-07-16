@@ -5,14 +5,18 @@
 {% block content %}
 <div class="space-y-8">
 
-    <div class="flex items-center justify-between bg-white p-6 rounded-2xl shadow-sm border border-purple-100">
-        <div>
-            <h1 class="text-3xl font-bold text-purple-950 flex items-center gap-2">
-                Bonjour {{ current_user.username }} <i data-lucide="smile" class="text-purple-600"></i>
-            </h1>
-            <p class="text-gray-500 mt-1">Continue à construire de bonnes habitudes chaque jour.</p>
-        </div>
+    <div class="flex items-center justify-between bg-purple-50/60 p-6 rounded-2xl shadow-sm border border-purple-100">
+    <div>
+        <h1 class="text-3xl font-bold text-blue-900 flex items-center gap-2">
+            Bonjour {{ current_user.username }} 
+            <i data-lucide="smile" class="text-blue-500"></i>
+        </h1>
+
+        <p class="text-blue-700/70 mt-1">
+            Continue à construire de bonnes habitudes chaque jour.
+        </p>
     </div>
+</div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="bg-white rounded-2xl shadow-sm border border-purple-100 p-6 flex items-center justify-between">
