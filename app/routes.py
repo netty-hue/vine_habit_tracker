@@ -1,10 +1,10 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 
 from app import db
-from app.models import User, TodoItem, Goal, Habit, HabitLog, DailyProgress
+from app.models import User, TodoItem, Goal, Habit, HabitLog, DailyProgress, Notification
 from app.forms import InscriptionForm, ConnexionForm, TacheForm
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, timedelta, time
 from sqlalchemy import func
 
 main = Blueprint("main", __name__)
@@ -12,25 +12,21 @@ main = Blueprint("main", __name__)
 
 # ---------------- ACCUEIL ----------------
 
-from flask_login import current_user
-
 @main.route("/")
 def index():
-
     if current_user.is_authenticated:
-        return redirect(url_for("main.login"))
+        return redirect(url_for("main.login"))  # CORRIGÉ : Redirige vers home si connecté
 
     return render_template("acceuil/index.html")
+
 
 # ---------------- INSCRIPTION ----------------
 
 @main.route("/inscription", methods=["GET", "POST"])
 def inscription():
-
     form = InscriptionForm()
 
     if form.validate_on_submit():
-
         if User.query.filter_by(email=form.email.data).first():
             flash("Cet email est déjà utilisé.", "danger")
             return redirect(url_for("main.inscription"))
@@ -54,14 +50,13 @@ def inscription():
     return render_template("connexion/register.html", form=form)
 
 
+# ---------------- CONNEXION ----------------
 
 @main.route("/login", methods=["GET", "POST"])
 def login():
-
     form = ConnexionForm()
 
     if form.validate_on_submit():
-
         print("Formulaire valide")
 
         utilisateur = User.query.filter_by(
@@ -74,7 +69,6 @@ def login():
             print("Utilisateur introuvable")
 
         if utilisateur and utilisateur.check_password(form.mot_de_passe.data):
-
             print("Connexion réussie")
 
             login_user(utilisateur)
@@ -174,13 +168,14 @@ def dashboard():
         current_streak=current_streak,
         best_streak=best_habit_streak,
         month_completion_rate=month_completion_rate,
-        todo_completion_rate=todo_completion_rate, # Nouveau KPI envoyé au template
+        todo_completion_rate=todo_completion_rate,
         log_data=log_data,
         daily_rates=daily_rates,
         monthly_rates=monthly_rates
     )
 
-# ── GOALS ────────────────────────────────────────────────────────
+
+# ── GOALS & TÂCHES (MODIFIÉ ET OPTIMISÉ) ───────────────────────────────────
 
 @main.route("/goal/create", methods=["POST"])
 @login_required
@@ -194,13 +189,171 @@ def create_goal():
         title=title,
         description=description,
         type=goal_type,
-        task_limit=int(task_limit),
+        task_limit=int(task_limit) if task_limit else 5,
         user_id=current_user.id
     )
     db.session.add(nouveau_goal)
     db.session.commit()
     flash("Objectif créé avec succès !", "success")
     return redirect(url_for("main.goal"))
+
+
+@main.route("/goal", methods=["GET", "POST"])
+@login_required
+def goal():
+    if request.method == "POST":
+        try:
+            # 1. Récupération de l'objectif lié à la tâche
+            goal_id = request.form.get("task_goal_id")
+            goal_id = int(goal_id) if goal_id and goal_id.isdigit() else None
+            
+            # Récupération de l'intervalle de temps
+            start_time_str = request.form.get("task_start_time")
+            end_time_str = request.form.get("task_end_time")
+            
+            start_time_obj = None
+            end_time_obj = None
+            
+            if start_time_str:
+                try:
+                    start_time_obj = datetime.strptime(start_time_str, "%H:%M").time()
+                except ValueError:
+                    pass
+            if end_time_str:
+                try:
+                    end_time_obj = datetime.strptime(end_time_str, "%H:%M").time()
+                except ValueError:
+                    pass
+
+            # Récupération de la date limite (par défaut : aujourd'hui)
+            deadline_str = request.form.get("task_deadline")
+            if deadline_str:
+                try:
+                    final_deadline = datetime.strptime(deadline_str, "%Y-%m-%d").date()
+                except ValueError:
+                    final_deadline = date.today()
+            else:
+                final_deadline = date.today()
+
+            # Sécurité : Si la date limite est dans le passé, on la réajuste à aujourd'hui
+            if final_deadline < date.today():
+                final_deadline = date.today()
+
+            # Récupération des jours sélectionnés
+            selected_days = request.form.getlist("task_days")
+            selected_days_ints = [int(d) for d in selected_days if d.isdigit()]
+
+            # Récupérer l'objectif pour la limite de tâches quotidienne (gestion du cas Optionnel/None)
+            task_limit = 5
+            if goal_id:
+                goal_obj = Goal.query.get(goal_id)
+                if goal_obj and hasattr(goal_obj, 'task_limit') and goal_obj.task_limit is not None:
+                    task_limit = goal_obj.task_limit
+
+            titre_tache = request.form.get("titre")
+            if not titre_tache:
+                flash("Le titre de la tâche est requis.", "danger")
+                return redirect(url_for("main.goal"))
+
+            # --- SÉCURITÉ ANTI-FLOOD ADAPTÉE ---
+            if not selected_days_ints:
+                today_midnight = datetime.combine(date.today(), time.min)
+                existing_today = TodoItem.query.filter_by(
+                    user_id=current_user.id, 
+                    goal_id=goal_id,
+                    deadline=date.today()
+                ).filter(TodoItem.created_at >= today_midnight).count()
+
+                if existing_today >= task_limit:
+                    flash(f"Limite de {task_limit} tâches atteinte pour aujourd'hui sur cet objectif.", "danger")
+                    return redirect(url_for("main.goal"))
+            
+            # Si l'utilisateur a sélectionné des jours de la semaine spécifiques
+            if selected_days_ints:
+                current_date = date.today()
+                taches_creees = 0
+                
+                # On boucle du jour actuel jusqu'à la date limite
+                while current_date <= final_deadline:
+                    if current_date.weekday() in selected_days_ints:
+                        # On vérifie si la limite pour ce jour précis est respectée
+                        tasks_on_day = TodoItem.query.filter_by(
+                            user_id=current_user.id,
+                            goal_id=goal_id,
+                            deadline=current_date
+                        ).count()
+
+                        if tasks_on_day < task_limit:
+                            nouvelle_tache = TodoItem(
+                                title=titre_tache,
+                                start_time=start_time_obj,
+                                end_time=end_time_obj,
+                                deadline=current_date,
+                                goal_id=goal_id,
+                                user_id=current_user.id
+                            )
+                            db.session.add(nouvelle_tache)
+                            taches_creees += 1
+                    current_date += timedelta(days=1)
+                
+                if taches_creees > 0:
+                    db.session.commit()
+                    flash(f"{taches_creees} actions planifiées !", "success")
+                else:
+                    flash("Aucune tâche n'a pu être planifiée (limite atteinte ou mauvaise période).", "warning")
+            else:
+                # Planification unique standard à la date limite choisie
+                tasks_on_deadline = TodoItem.query.filter_by(
+                    user_id=current_user.id,
+                    goal_id=goal_id,
+                    deadline=final_deadline
+                ).count()
+
+                if tasks_on_deadline >= task_limit:
+                    flash(f"La limite de tâches pour le {final_deadline.strftime('%d/%m')} est atteinte.", "danger")
+                    return redirect(url_for("main.goal"))
+
+                nouvelle_tache = TodoItem(
+                    title=titre_tache,
+                    start_time=start_time_obj,
+                    end_time=end_time_obj,
+                    deadline=final_deadline,
+                    goal_id=goal_id,
+                    user_id=current_user.id
+                )
+                db.session.add(nouvelle_tache)
+                db.session.commit()
+                flash("Action planifiée avec succès !", "success")
+
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Une erreur est survenue : {str(e)}", "danger")
+            
+        return redirect(url_for("main.goal"))
+
+    # --- PARTIE GET (AFFICHAGE SÉCURISÉ ET TRIÉ) ---
+    goals_actifs = Goal.query.filter_by(user_id=current_user.id, is_archived=False).all()
+    goals_archives = Goal.query.filter_by(user_id=current_user.id, is_archived=True).all()
+    habits = Habit.query.filter_by(user_id=current_user.id).all()
+    today = date.today()
+
+    # Récupération et tri robuste en Python
+    taches_raw = TodoItem.query.filter_by(user_id=current_user.id).all()
+    
+    # Tri 100% robuste : si start_time est None, on utilise une heure maximale par défaut
+    taches = sorted(
+        taches_raw, 
+        key=lambda t: t.start_time if t.start_time is not None else time(23, 59, 59)
+    )
+    
+    return render_template(
+        "data/goal.html",  # Reste "data/goal.html" ou "goal.html" selon l'arborescence de tes templates
+        taches=taches, 
+        goals_actifs=goals_actifs, 
+        goals_archives=goals_archives, 
+        habits=habits, 
+        today=today
+    )
 
 
 @main.route("/goal/<int:goal_id>/archiver")
@@ -213,16 +366,22 @@ def archiver_goal(goal_id):
         flash("Objectif archivé.", "info")
     return redirect(url_for("main.goal"))
 
-@main.route("/tache/<int:tache_id>/terminer")
+
+@main.route("/tache/<int:tache_id>/terminer", methods=["GET", "POST"])
 @login_required
 def terminer_tache(tache_id):
     tache = TodoItem.query.get_or_404(tache_id)
 
     if tache.user_id != current_user.id:
         flash("Action non autorisée.", "danger")
-        return redirect(url_for("main.goal"))
+        return redirect(request.referrer or url_for("main.goal"))
 
-    # Basculer l'état de la tâche
+    # Sécurité pour les tâches futures
+    if tache.deadline and tache.deadline > date.today():
+        flash("Tu ne peux pas valider une tâche future !", "danger")
+        return redirect(request.referrer or url_for("main.goal"))
+
+    # Inverse l'état de complétion
     tache.is_completed = not tache.is_completed
 
     if tache.is_completed:
@@ -233,8 +392,9 @@ def terminer_tache(tache_id):
         flash("Tâche remise en cours.", "info")
 
     db.session.commit()
-
-    return redirect(url_for("main.goal"))
+    
+    # CORRECTION : Redirige sur la page active actuelle (évite le retour sur 'goal')
+    return redirect(request.referrer or url_for("main.goal"))
 
 @main.route("/tache/<int:tache_id>/supprimer")
 @login_required
@@ -243,7 +403,7 @@ def supprimer_tache(tache_id):
 
     if tache.user_id != current_user.id:
         flash("Action non autorisée.", "danger")
-        return redirect(url_for("main.goal"))
+        return redirect(request.referrer or url_for("main.goal"))
 
     db.session.delete(tache)
     db.session.commit()
@@ -315,73 +475,12 @@ def modifier_habitude(habit_id):
     return render_template("data/modifier_habitude.html", habit=habit)
 
 
-
-
-# ── TÂCHES ───────────────────────────────────────────────────────
-
-@main.route("/goal", methods=["GET", "POST"])
-@login_required
-def goal():
-    if request.method == "POST":
-        # Vérifier la limite de tâches par jour
-        goal_id    = request.form.get("task_goal_id")
-        creneau    = request.form.get("task_creneau", "matin")
-        today      = date.today()
-
-        # Compter les tâches du jour pour cet objectif
-        # (limite définie dans l'objectif)
-        existing = TodoItem.query.filter_by(
-            user_id=current_user.id
-        ).filter(TodoItem.created_at >= today).count()
-
-        # Récupérer la limite depuis l'objectif si dispo
-        goal_obj   = Goal.query.get(goal_id) if goal_id else None
-        task_limit = goal_obj.task_limit if goal_obj else 5
-
-        if existing >= task_limit:
-            flash(f"Limite de {task_limit} tâches par jour atteinte pour cet objectif. Reste focalisé !", "danger")
-            return redirect(url_for("main.goal"))
-        
-        deadline_str = request.form.get("task_deadline")
-
-        deadline = None
-        if deadline_str:
-            deadline = datetime.strptime(deadline_str, "%Y-%m-%d").date()
-
-        nouvelle_tache = TodoItem(
-            title=request.form.get("titre"),
-            creneau=creneau,
-            deadline=deadline,
-            user_id=current_user.id
-        )
-        db.session.add(nouvelle_tache)
-        db.session.commit()
-        return redirect(url_for("main.goal"))
-
-    taches        = TodoItem.query.filter_by(user_id=current_user.id).all()
-    goals_actifs  = Goal.query.filter_by(user_id=current_user.id, is_archived=False).all()
-    goals_archives = Goal.query.filter_by(user_id=current_user.id, is_archived=True).all()
-    habits        = Habit.query.filter_by(user_id=current_user.id).all()
-
-    return render_template("data/goal.html",
-        form = TacheForm(),                   
-        taches=taches,
-        goals_actifs=goals_actifs,
-        goals_archives=goals_archives,
-        habits=habits
-    )
-
-
-
-
 # ---------------- SETTINGS ----------------
 
 @main.route("/settings", methods=["GET", "POST"])
 @login_required
 def settings():
-
     if request.method == "POST":
-
         current_user.nom = request.form.get("nom")
         current_user.email = request.form.get("email")
 
@@ -390,7 +489,6 @@ def settings():
         confirmation = request.form.get("confirmation_password")
 
         if nouveau:
-
             if not current_user.check_password(ancien):
                 flash("Ancien mot de passe incorrect.", "danger")
                 return redirect(url_for("main.settings"))
@@ -412,12 +510,9 @@ def settings():
 
 # ---------------- HOME ----------------
 
-from datetime import date, timedelta
-
 @main.route("/home")
 @login_required
 def home():
-
     habits = Habit.query.filter_by(user_id=current_user.id).all()
     total_habits = len(habits)
 
@@ -450,7 +545,6 @@ def home():
     events = []
 
     for task in tasks:
-
         # Date à afficher dans le calendrier
         if task.deadline:
             event_date = task.deadline
@@ -472,3 +566,94 @@ def home():
         streak=streak,
         events=events
     )
+
+
+# ── LISTE DES TÂCHES (MODIFIÉ ET NETTOYÉ) ─────────────────────────────────
+
+@main.route('/taches', methods=['GET'])
+@login_required
+def list_taches():
+    today_val = date.today()
+    
+    # 1. On récupère les tâches (TodoItem) de l'utilisateur connecté
+    taches = TodoItem.query.filter_by(user_id=current_user.id).order_by(TodoItem.start_time.asc()).all()
+    
+    # 2. On récupère ses objectifs (Goals) actifs
+    goals_actifs = Goal.query.filter_by(user_id=current_user.id, is_archived=False).all()
+    
+    # 3. On récupère ses habitudes (Habits)
+    habits = Habit.query.filter_by(user_id=current_user.id).all()
+    
+    return render_template('data/tache.html', 
+            taches=taches, 
+            goals_actifs=goals_actifs, 
+            habits=habits, 
+            today=today_val)
+
+# ── API NOTIFICATIONS ─────────────────────────────────
+
+@main.route("/api/notifications", methods=["GET"])
+@login_required
+def get_notifications():
+    # On récupère les 10 dernières notifications non lues
+    notifications = Notification.query.filter_by(user_id=current_user.id, is_read=False)\
+                                      .order_by(Notification.created_at.desc())\
+                                      .limit(10).all()
+    
+    return jsonify([{
+        "id": n.id,
+        "message": n.message,
+        "type": n.type,
+        "created_at": n.created_at.strftime("%d/%m %H:%M")
+    } for n in notifications])
+
+
+@main.route("/api/notifications/unread-count", methods=["GET"])
+@login_required
+def get_unread_notif_count():
+    count = Notification.query.filter_by(user_id=current_user.id, is_read=False).count()
+    return jsonify({"count": count})
+
+
+@main.route("/api/notifications/read/<int:notif_id>", methods=["POST"])
+@login_required
+def read_notification(notif_id):
+    notification = Notification.query.get_or_404(notif_id)
+    if notification.user_id != current_user.id:
+        return jsonify({"error": "Action non autorisée"}), 403
+    
+    notification.is_read = True
+    db.session.commit()
+    return jsonify({"status": "success"})
+
+
+@main.route("/api/notifications/read-all", methods=["POST"])
+@login_required
+def read_all_notifications():
+    notifications = Notification.query.filter_by(user_id=current_user.id, is_read=False).all()
+    for notif in notifications:
+        notif.is_read = True
+    db.session.commit()
+    return jsonify({"status": "success"})
+
+
+@main.route("/api/theme/toggle", methods=["POST"])
+@login_required
+def toggle_theme():
+    # Change le thème en DB
+    current_user.theme = "dark" if current_user.theme == "light" else "light"
+    db.session.commit()
+    return jsonify({"status": "success", "theme": current_user.theme})
+
+
+# ============================================
+# FONCTION HELPER : Crée des notifications n'importe où
+# ============================================
+def create_notification(user_id, message, type="info"):
+    """
+    Appelle cette fonction n'importe où dans tes routes (ex: lors de la validation d'une tâche ou d'un streak)
+    pour notifier automatiquement ton utilisateur !
+    """
+    notif = Notification(user_id=user_id, message=message, type=type)
+    db.session.add(notif)
+    db.session.commit()

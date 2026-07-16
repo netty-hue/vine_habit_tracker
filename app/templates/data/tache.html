@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block titre %}Suivi des Tâches — Vine Habit{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-10 pb-12">
+
+    <div class="relative overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-800 to-purple-900 rounded-3xl p-8 md:p-10 shadow-xl text-white">
+        <div class="absolute -right-10 -top-10 w-40 h-40 bg-purple-50/20 rounded-full blur-2xl"></div>
+        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-indigo-50/20 rounded-full blur-2xl"></div>
+        
+        <div class="relative z-10 max-w-2xl">
+            <span class="inline-flex items-center gap-1.5 bg-indigo-500/30 text-indigo-200 text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-md mb-4">
+                <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Tableau de suivi
+            </span>
+            <h1 class="text-3xl md:text-4xl font-black tracking-tight mb-3 flex items-center gap-3">
+                Mon Quotidien d'Actions <i data-lucide="list-todo" class="text-emerald-400"></i>
+            </h1>
+            <p class="text-purple-100/90 text-sm md:text-base leading-relaxed font-medium">
+                Cochez vos actions du jour, suivez vos habitudes récurrentes et progressez vers vos objectifs.
+            </p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-purple-100 p-6 shadow-sm">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <i data-lucide="compass" class="w-5 h-5 text-purple-600"></i> Objectifs actifs
+        </h2>
+        {% if goals_actifs %}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {% for goal in goals_actifs %}
+            <div class="p-4 bg-purple-50/20 border border-purple-100/60 rounded-xl space-y-3">
+                <div class="flex items-center justify-between">
+                    <p class="text-sm font-bold text-gray-900">{{ goal.title }}</p>
+                    <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 uppercase tracking-wide">
+                        {% if goal.type == 'long_terme' %}Long terme{% else %}Court terme{% endif %}
+                    </span>
+                </div>
+                {% if goal.description %}
+                    <p class="text-xs text-gray-500 line-clamp-2">{{ goal.description }}</p>
+                {% endif %}
+                <div class="flex justify-between items-center pt-2 border-t border-purple-100/50 text-xs">
+                    <span class="text-purple-600 font-medium">Actif</span>
+                    <div class="flex gap-2">
+                        <a href="{{ url_for('main.archiver_goal', goal_id=goal.id) }}" class="text-gray-500 hover:text-purple-700 hover:underline">Archiver</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-4 text-sm text-gray-400">Aucun objectif actif.</div>
+        {% endif %}
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- COLONNE TÂCHES -->
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-purple-100/80 shadow-sm p-6 md:p-8">
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight flex items-center gap-2 mb-6">
+                <i data-lucide="calendar-check" class="text-purple-600 w-5 h-5"></i> Tâches planifiées
+            </h2>
+
+            {% if taches %}
+            <div class="space-y-3">
+                {% for tache in taches %}
+                <div class="flex items-center justify-between p-4 bg-purple-50/10 border border-purple-100/60 rounded-xl transition hover:bg-white hover:shadow-sm">
+                    <div class="flex items-center gap-4">
+                        
+                        {% set is_future = tache.deadline and tache.deadline > today %}
+                        
+                        {% if is_future %}
+                            <div class="flex items-center gap-1.5 bg-gray-100 text-gray-500 text-xs font-bold px-2.5 py-1.5 rounded-lg border border-gray-200 select-none cursor-not-allowed">
+                                <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+                                <span>Bloqué</span>
+                            </div>
+                        {% else %}
+                            <!-- Formulaire de validation sans rechargement (AJAX) -->
+                            <form action="{{ url_for('main.terminer_tache', tache_id=tache.id) }}" method="POST" class="ajax-task-form">
+                                <input type="checkbox" 
+                                       class="task-checkbox w-5 h-5 rounded-md border-purple-300 text-purple-600 focus:ring-purple-500/20 cursor-pointer"
+                                       {% if tache.is_completed %}checked{% endif %}>
+                            </form>
+                        {% endif %}
+
+                        <div>
+                            <!-- Ajout d'une classe "task-title" pour pouvoir la barrer dynamiquement en JS -->
+                            <span class="task-title text-sm block {{ 'line-through text-gray-400 font-normal' if tache.is_completed else 'text-gray-800 font-semibold' }}">
+                                {{ tache.title }}
+                            </span>
+                            <div class="text-xs text-gray-500 flex gap-2 mt-1">
+                                <span><i data-lucide="clock" class="w-3 h-3 inline"></i> {{ tache.start_time.strftime('%H:%M') if tache.start_time else '--:--' }}</span>
+                                {% if tache.deadline %}<span>• Échéance : {{ tache.deadline.strftime('%d/%m/%Y') }}</span>{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('main.supprimer_tache', tache_id=tache.id) }}" class="text-gray-400 hover:text-red-500 transition">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-gray-400 text-sm text-center py-8">Aucune tâche active planifiée.</p>
+            {% endif %}
+        </div>
+
+        <!-- COLONNE HABITUDES -->
+        <div class="bg-white rounded-2xl border border-purple-100/80 shadow-sm p-6">
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight flex items-center gap-2 mb-6">
+                <i data-lucide="activity" class="text-emerald-500 w-5 h-5"></i> Mes Habitudes
+            </h2>
+
+            {% if habits %}
+            <div class="space-y-4">
+                {% for habit in habits %}
+                <div class="group p-4 bg-emerald-50/30 hover:bg-emerald-50/60 border border-emerald-100/70 rounded-xl transition-all">
+                    <div class="flex items-start justify-between gap-2">
+                        <div>
+                            <p class="text-sm font-bold text-gray-900">{{ habit.title }}</p>
+                            {% if habit.schedule_days %}
+                            <p class="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                                <i data-lucide="calendar" class="w-3.5 h-3.5 text-emerald-500"></i> {{ habit.schedule_days }}
+                            </p>
+                            {% endif %}
+                            
+                            <div class="flex flex-wrap gap-1.5 mt-2">
+                                {% if habit.duration %}
+                                <span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">
+                                    <i data-lucide="timer" class="w-3 h-3"></i> {{ habit.duration }} min
+                                </span>
+                                {% endif %}
+                                <span class="inline-flex items-center gap-1 text-[10px] font-bold text-orange-700 bg-orange-100 px-2 py-0.5 rounded-md">
+                                    <i data-lucide="flame" class="w-3 h-3"></i> {{ habit.current_streak }}j
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <a href="{{ url_for('main.modifier_habitude', habit_id=habit.id) }}" class="p-1 text-purple-600 hover:bg-purple-100/50 rounded-lg transition" title="Modifier">
+                                <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+                            </a>
+                            <a href="{{ url_for('main.supprimer_habitude', habit_id=habit.id) }}" class="p-1 text-red-500 hover:bg-red-50 rounded-lg transition" title="Supprimer">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-10 border border-dashed border-emerald-100 rounded-xl">
+                <i data-lucide="plus-circle" class="w-8 h-8 text-emerald-200 mx-auto mb-2"></i>
+                <p class="text-xs text-gray-400">Aucune habitude active.</p>
+                <a href="{{ url_for('main.goal') }}" class="text-xs text-emerald-600 font-semibold underline mt-2 block">En créer une</a>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+
+        // Script pour gérer le cochage des tâches en tâche de fond (sans rechargement)
+        const checkboxes = document.querySelectorAll('.task-checkbox');
+        
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const form = this.closest('.ajax-task-form');
+                const actionUrl = form.getAttribute('action');
+                const taskTitle = form.closest('.flex').querySelector('.task-title');
+
+                // 1. Effet visuel immédiat (pour une sensation de rapidité)
+                if (this.checked) {
+                    taskTitle.classList.add('line-through', 'text-gray-400', 'font-normal');
+                    taskTitle.classList.remove('text-gray-800', 'font-semibold');
+                } else {
+                    taskTitle.classList.remove('line-through', 'text-gray-400', 'font-normal');
+                    taskTitle.classList.add('text-gray-800', 'font-semibold');
+                }
+
+                // 2. Envoi de la requête au serveur Flask en arrière-plan
+                fetch(actionUrl, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest', // Permet au backend de savoir que c'est de l'AJAX si besoin
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        // En cas de problème côté serveur, on annule le changement visuel
+                        alert("Erreur lors de la mise à jour de la tâche.");
+                        this.checked = !this.checked;
+                        taskTitle.classList.toggle('line-through');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    // En cas d'erreur réseau, on remet l'état précédent
+                    this.checked = !this.checked;
+                    taskTitle.classList.toggle('line-through');
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -6,8 +6,8 @@
 <div class="max-w-4xl mx-auto space-y-10 pb-12">
 
     <div class="relative overflow-hidden bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 rounded-3xl p-8 md:p-10 shadow-xl text-white">
-        <div class="absolute -right-10 -top-10 w-40 h-40 bg-purple-500/20 rounded-full blur-2xl"></div>
-        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-indigo-500/20 rounded-full blur-2xl"></div>
+        <div class="absolute -right-10 -top-10 w-40 h-40 bg-purple-50/20 rounded-full blur-2xl"></div>
+        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-indigo-50/20 rounded-full blur-2xl"></div>
         
         <div class="relative z-10 max-w-2xl">
             <span class="inline-flex items-center gap-1.5 bg-purple-500/30 text-purple-200 text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-md mb-4">
@@ -60,11 +60,11 @@
                     <div class="space-y-2">
                         <label class="block text-sm font-semibold text-gray-700">Type d'objectif</label>
                         <div class="grid grid-cols-2 gap-3">
-                            <label class="flex items-center justify-center gap-2 p-3 bg-purple-50/30 border border-purple-100 rounded-xl cursor-pointer text-sm font-medium text-gray-700 hover:bg-purple-50 transition has-[:checked]:bg-purple-600 has-[:checked]:text-white has-[:checked]:border-purple-600">
+                            <label class="flex items-center justify-center gap-2 p-3 bg-purple-50/30 border border-purple-100 rounded-xl cursor-pointer text-sm font-medium text-gray-700 hover:bg-purple-50 transition has-[input:checked]:bg-purple-600 has-[input:checked]:text-white has-[input:checked]:border-purple-600">
                                 <input type="radio" name="goal_type" value="court_terme" checked class="sr-only">
                                 <i data-lucide="zap" class="w-4 h-4"></i> Court terme
                             </label>
-                            <label class="flex items-center justify-center gap-2 p-3 bg-purple-50/30 border border-purple-100 rounded-xl cursor-pointer text-sm font-medium text-gray-700 hover:bg-purple-50 transition has-[:checked]:bg-purple-600 has-[:checked]:text-white has-[:checked]:border-purple-600">
+                            <label class="flex items-center justify-center gap-2 p-3 bg-purple-50/30 border border-purple-100 rounded-xl cursor-pointer text-sm font-medium text-gray-700 hover:bg-purple-50 transition has-[input:checked]:bg-purple-600 has-[input:checked]:text-white has-[input:checked]:border-purple-600">
                                 <input type="radio" name="goal_type" value="long_terme" class="sr-only">
                                 <i data-lucide="flag" class="w-4 h-4"></i> Long terme
                             </label>
@@ -145,36 +145,6 @@
                     </button>
                 </div>
             </form>
-
-            {% if habits %}
-            <div class="mt-8 border-t border-purple-100 pt-6 space-y-3">
-                <h3 class="text-xs font-bold text-purple-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
-                    <i data-lucide="activity" class="w-3.5 h-3.5"></i> Habitudes actives
-                </h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {% for habit in habits %}
-                    <div class="group flex items-center justify-between p-4 bg-purple-50/20 hover:bg-purple-50/50 border border-purple-100/70 rounded-xl transition-all">
-                        <div class="space-y-1">
-                            <p class="text-sm font-semibold text-gray-900">{{ habit.title }}</p>
-                            <div class="flex items-center gap-2 text-xs text-gray-500">
-                                <span class="inline-flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i> {{ habit.schedule_days }}</span>
-                                <span>•</span>
-                                <span class="inline-flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> {{ habit.duration }} min</span>
-                            </div>
-                        </div>
-                        <div class="flex gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
-                            <a href="{{ url_for('main.modifier_habitude', habit_id=habit.id) }}" class="p-1.5 text-purple-600 hover:bg-purple-100/50 rounded-lg transition" title="Modifier">
-                                <i data-lucide="edit-2" class="w-4 h-4"></i>
-                            </a>
-                            <a href="{{ url_for('main.supprimer_habitude', habit_id=habit.id) }}" class="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition" title="Supprimer">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            </a>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
         </div>
         {% endif %}
 
@@ -187,27 +157,60 @@
 
             <form method="POST" action="{{ url_for('main.goal') }}" class="space-y-5">
                 <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">Pour quel objectif ?</label>
+                    <div class="relative">
+                        <i data-lucide="target" class="absolute left-4 top-3.5 w-4 h-4 text-purple-400"></i>
+                        <select name="task_goal_id" class="w-full pl-11 pr-10 py-3 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white appearance-none transition">
+                            <option value="">-- Sélectionner l'objectif lié (Optionnel) --</option>
+                            {% for goal in goals_actifs %}
+                            <option value="{{ goal.id }}">{{ goal.title }}</option>
+                            {% endfor %}
+                        </select>
+                        <i data-lucide="chevron-down" class="absolute right-4 top-3.5 w-4 h-4 text-gray-400 pointer-events-none"></i>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
                     <label class="block text-sm font-semibold text-gray-700">Quelle est l'action précise ?</label>
                     <input type="text" name="titre" required placeholder="Ex: Faire 15 min de gainage léger"
                         class="w-full px-4 py-3 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white transition">
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
-                    <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">Créneau horaire</label>
-                        <div class="grid grid-cols-2 gap-3">
-                            <label class="flex items-center justify-center gap-2 p-2.5 bg-purple-50/30 border border-purple-100 rounded-xl cursor-pointer text-sm font-medium text-gray-700 hover:bg-purple-50 transition has-[:checked]:bg-purple-600 has-[:checked]:text-white has-[:checked]:border-purple-600">
-                                <input type="radio" name="task_creneau" value="matin" checked class="sr-only">
-                                <i data-lucide="sunrise" class="w-4 h-4"></i> Matin
-                            </label>
-                            <label class="flex items-center justify-center gap-2 p-2.5 bg-purple-50/30 border border-purple-100 rounded-xl cursor-pointer text-sm font-medium text-gray-700 hover:bg-purple-50 transition has-[:checked]:bg-purple-600 has-[:checked]:text-white has-[:checked]:border-purple-600">
-                                <input type="radio" name="task_creneau" value="soir" class="sr-only">
-                                <i data-lucide="moon" class="w-4 h-4"></i> Soir
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">Quels jours effectuer cette tâche ? (Laisse vide pour une tâche unique)</label>
+                    <div class="grid grid-cols-4 sm:grid-cols-7 gap-2">
+                        {% set weekdays = [('0', 'Lun'), ('1', 'Mar'), ('2', 'Mer'), ('3', 'Jeu'), ('4', 'Ven'), ('5', 'Sam'), ('6', 'Dim')] %}
+                        {% for val, name in weekdays %}
+                        <div class="relative">
+                            <input type="checkbox" name="task_days" id="day_{{ val }}" value="{{ val }}" class="peer sr-only">
+                            
+                            <label for="day_{{ val }}" class="flex flex-col items-center justify-center p-3 border border-purple-100 rounded-xl cursor-pointer text-xs font-bold text-gray-700 bg-white hover:bg-purple-50/50 transition-all select-none shadow-2xs peer-checked:bg-purple-600 peer-checked:text-white peer-checked:border-purple-600">
+                                <span>{{ name }}</span>
                             </label>
                         </div>
+                        {% endfor %}
                     </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
                     <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">Date limite (optionnel)</label>
+                        <label class="block text-sm font-semibold text-gray-700">Créneau horaire (Intervalle)</label>
+                        <div class="flex items-center gap-2">
+                            <div class="relative flex-1">
+                                <span class="absolute left-3 top-3 text-xs text-gray-400">De</span>
+                                <input type="time" name="task_start_time" required
+                                    class="w-full pl-8 pr-3 py-2 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white transition">
+                            </div>
+                            <div class="relative flex-1">
+                                <span class="absolute left-3 top-3 text-xs text-gray-400">À</span>
+                                <input type="time" name="task_end_time" required
+                                    class="w-full pl-8 pr-3 py-2 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white transition">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Date limite / Date d'exécution</label>
                         <input type="date" name="task_deadline" class="w-full px-4 py-2.5 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white transition">
                     </div>
                 </div>
@@ -218,89 +221,14 @@
                     </button>
                 </div>
             </form>
-
-            {% if taches %}
-            <div class="mt-8 border-t border-purple-100 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-3">
-                    <p class="text-xs font-bold text-amber-600 uppercase tracking-wider flex items-center gap-1.5"><i data-lucide="sunrise" class="w-4 h-4"></i> Matin</p>
-                    <div class="space-y-2">
-                        {% for tache in taches if tache.creneau == 'matin' %}
-                        <div class="flex items-center justify-between p-3.5 bg-purple-50/10 border border-purple-100/60 rounded-xl transition hover:bg-white hover:shadow-sm">
-                            <span class="text-sm {{ 'line-through text-gray-400 font-normal' if tache.is_completed else 'text-gray-800 font-semibold' }}">{{ tache.title }}</span>
-                            <div class="flex items-center gap-3">
-                                <a href="{{ url_for('main.terminer_tache', tache_id=tache.id) }}" 
-                                   class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-bold border transition-colors {{ 'bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200' if tache.is_completed else 'bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-600 hover:text-white' }}">
-                                    {{ 'Rouvrir' if tache.is_completed else 'Fait ✓' }}
-                                </a>
-                                <a href="{{ url_for('main.supprimer_tache', tache_id=tache.id) }}" class="text-gray-400 hover:text-red-500 transition">
-                                    <i data-lucide="x" class="w-4 h-4"></i>
-                                </a>
-                            </div>
-                        </div>
-                        {% else %}
-                        <p class="text-xs text-gray-400 italic bg-gray-50/50 p-4 rounded-xl border border-dashed text-center">Aucune tâche planifiée ce matin.</p>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <div class="space-y-3">
-                    <p class="text-xs font-bold text-indigo-600 uppercase tracking-wider flex items-center gap-1.5"><i data-lucide="moon" class="w-4 h-4"></i> Soir</p>
-                    <div class="space-y-2">
-                        {% for tache in taches if tache.creneau == 'soir' %}
-                        <div class="flex items-center justify-between p-3.5 bg-purple-50/10 border border-purple-100/60 rounded-xl transition hover:bg-white hover:shadow-sm">
-                            <span class="text-sm {{ 'line-through text-gray-400 font-normal' if tache.is_completed else 'text-gray-800 font-semibold' }}">{{ tache.title }}</span>
-                            <div class="flex items-center gap-3">
-                                <a href="{{ url_for('main.terminer_tache', tache_id=tache.id) }}" 
-                                   class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-bold border transition-colors {{ 'bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200' if tache.is_completed else 'bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-600 hover:text-white' }}">
-                                    {{ 'Rouvrir' if tache.is_completed else 'Fait ✓' }}
-                                </a>
-                                <a href="{{ url_for('main.supprimer_tache', tache_id=tache.id) }}" class="text-gray-400 hover:text-red-500 transition">
-                                    <i data-lucide="x" class="w-4 h-4"></i>
-                                </a>
-                            </div>
-                        </div>
-                        {% else %}
-                        <p class="text-xs text-gray-400 italic bg-gray-50/50 p-4 rounded-xl border border-dashed text-center">Aucune tâche planifiée ce soir.</p>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            {% endif %}
         </div>
         {% endif %}
 
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {% if goals_actifs %}
-        <div class="bg-white rounded-2xl border border-purple-100 p-6 shadow-sm">
-            <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <i data-lucide="compass" class="w-5 h-5 text-purple-600"></i> Objectifs en cours
-            </h2>
-            <div class="space-y-3">
-                {% for goal in goals_actifs %}
-                <div class="p-4 bg-purple-50/20 border border-purple-100/60 rounded-xl space-y-2 hover:bg-purple-50/40 transition">
-                    <div>
-                        <p class="text-sm font-bold text-gray-900">{{ goal.title }}</p>
-                        <p class="text-xs text-gray-500 mt-0.5">{{ goal.description }}</p>
-                    </div>
-                    <div class="flex justify-between items-center pt-2 border-t border-purple-100/50">
-                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 uppercase tracking-wide">
-                            {% if goal.type == 'long_terme' %}<i data-lucide="flag" class="w-3 h-3"></i> Long terme{% else %}<i data-lucide="zap" class="w-3 h-3"></i> Court terme{% endif %}
-                        </span>
-                        <div class="flex gap-3 text-xs font-semibold">
-                            <a href="{{ url_for('main.archiver_goal', goal_id=goal.id) }}" class="text-gray-500 hover:text-purple-700 hover:underline">Archiver</a>
-                            <a href="{{ url_for('main.supprimer_goal', goal_id=goal.id) }}" class="text-red-400 hover:text-red-600 hover:underline">Supprimer</a>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
         {% if goals_archives %}
-        <div class="bg-gray-50 border border-gray-200/80 rounded-2xl p-6">
+        <div class="bg-gray-50 border border-gray-200/80 rounded-2xl p-6 md:col-span-2">
             <h2 class="text-lg font-bold text-gray-500 mb-4 flex items-center gap-2">
                 <i data-lucide="archive" class="w-5 h-5"></i> Objectifs passés
             </h2>

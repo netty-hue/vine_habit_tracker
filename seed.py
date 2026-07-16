@@ -1,5 +1,13 @@
 from datetime import datetime, timedelta
 import random
+from app import create_app, db
+
+# On initialise l'application Flask pour obtenir le bon contexte
+app = create_app()
+
+with app.app_context():
+    db.drop_all()   # Supprime les anciennes tables si elles existent
+    db.create_all() # Crée toutes les tables proprement selon tes modèles à jour
 
 from app import create_app, db
 from app.models import (
