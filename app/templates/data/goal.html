@@ -38,7 +38,7 @@
             <form method="POST" action="{{ url_for('main.create_goal') }}" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">Quel est ton Objectif ?</label>
+                        <label class="block text-sm font-semibold text-[#B08D57]">Quel est ton Objectif ?</label>
                         <div class="relative">
                             <i data-lucide="target" class="absolute left-4 top-3.5 w-4 h-4 text-purple-400"></i>
                             <input type="text" name="goal_title" required placeholder="Ex: Corps tonique et esprit sain"
@@ -47,7 +47,7 @@
                     </div>
 
                     <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">Pourquoi cet objectif est crucial ?</label>
+                        <label class="block text-sm font-semibold text-[#B08D57]">Pourquoi cet objectif est crucial ?</label>
                         <div class="relative">
                             <i data-lucide="heart" class="absolute left-4 top-3.5 w-4 h-4 text-purple-400"></i>
                             <textarea name="goal_description" rows="1" placeholder="Ex: Pour retrouver de l'énergie au quotidien..."
@@ -58,7 +58,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
                     <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">Type d'objectif</label>
+                        <label class="block text-sm font-semibold text-[#B08D57]">Type d'objectif</label>
                         <div class="grid grid-cols-2 gap-3">
                             <label class="flex items-center justify-center gap-2 p-3 bg-purple-50/30 border border-purple-100 rounded-xl cursor-pointer text-sm font-medium text-gray-700 hover:bg-purple-50 transition has-[input:checked]:bg-purple-600 has-[input:checked]:text-white has-[input:checked]:border-purple-600">
                                 <input type="radio" name="goal_type" value="court_terme" checked class="sr-only">
@@ -73,7 +73,7 @@
 
                     <div class="space-y-2">
                         <div class="flex justify-between items-center">
-                            <label class="block text-sm font-semibold text-gray-700">Limite de tâches / jour</label>
+                            <label class="block text-sm font-semibold text-[#B08D57]">Limite de tâches / jour</label>
                             <span class="text-[11px] text-gray-400">Conseillé : 3 à 5</span>
                         </div>
                         <div class="relative">
@@ -101,7 +101,7 @@
 
             <form method="POST" action="{{ url_for('main.create_habit') }}" class="space-y-5">
                 <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700">Pour quel objectif ?</label>
+                    <label class="block text-sm font-semibold text-[#B08D57]">Pour quel objectif ?</label>
                     <div class="relative">
                         <i data-lucide="check-square" class="absolute left-4 top-3.5 w-4 h-4 text-purple-400"></i>
                         <select name="habit_goal_id" class="w-full pl-11 pr-10 py-3 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white appearance-none transition">
@@ -115,12 +115,12 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">Nom de l'habitude</label>
+                        <label class="block text-sm font-semibold text-[#B08D57]">Nom de l'habitude</label>
                         <input type="text" name="habit_title" required placeholder="Ex: Séance de cardio"
                             class="w-full px-4 py-3 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white transition">
                     </div>
                     <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">Résultat attendu</label>
+                        <label class="block text-sm font-semibold text-[#B08D57]">Résultat attendu</label>
                         <input type="text" name="habit_expected_result" placeholder="Ex: Tenir 30 min sans pause"
                             class="w-full px-4 py-3 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white transition">
                     </div>
@@ -128,12 +128,12 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">Jours planifiés</label>
+                        <label class="block text-sm font-semibold text-[#B08D57]">Jours planifiés</label>
                         <input type="text" name="habit_schedule_days" placeholder="Ex: Lun, Mer, Ven"
                             class="w-full px-4 py-3 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white transition">
                     </div>
                     <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">Durée (minutes)</label>
+                        <label class="-gray-700">Durée (minutes)</label>
                         <input type="number" name="habit_duration" min="1" placeholder="Ex: 30"
                             class="w-full px-4 py-3 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white transition">
                     </div>
@@ -153,11 +153,11 @@
             <div class="flex items-center gap-3 mb-6">
                 <span class="flex items-center justify-center bg-purple-600 text-white font-extrabold text-xs w-20 h-7 rounded-full uppercase tracking-wider shadow-sm">Étape 3</span>
                 <h2 class="text-xl font-bold text-gray-900 tracking-tight">Actions du jour (Tâches)</h2>
-            </div>
+            </div>block text-sm font-semibold text
 
             <form method="POST" action="{{ url_for('main.goal') }}" class="space-y-5">
                 <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700">Pour quel objectif ?</label>
+                    <label class="block text-sm font-semibold text-[#B08D57]">Pour quel objectif ?</label>
                     <div class="relative">
                         <i data-lucide="target" class="absolute left-4 top-3.5 w-4 h-4 text-purple-400"></i>
                         <select name="task_goal_id" class="w-full pl-11 pr-10 py-3 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white appearance-none transition">
@@ -171,13 +171,13 @@
                 </div>
 
                 <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700">Quelle est l'action précise ?</label>
+                    <label class="block text-sm font-semibold text-[#B08D57]">Quelle est l'action précise ?</label>
                     <input type="text" name="titre" required placeholder="Ex: Faire 15 min de gainage léger"
                         class="w-full px-4 py-3 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white transition">
                 </div>
 
                 <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700">Quels jours effectuer cette tâche ? (Laisse vide pour une tâche unique)</label>
+                    <label class="block text-sm font-semibold text-[#B08D57]">Quels jours effectuer cette tâche ? (Laisse vide pour une tâche unique)</label>
                     <div class="grid grid-cols-4 sm:grid-cols-7 gap-2">
                         {% set weekdays = [('0', 'Lun'), ('1', 'Mar'), ('2', 'Mer'), ('3', 'Jeu'), ('4', 'Ven'), ('5', 'Sam'), ('6', 'Dim')] %}
                         {% for val, name in weekdays %}
@@ -194,7 +194,7 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
                     <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">Créneau horaire (Intervalle)</label>
+                        <label class="block text-sm font-semibold text-[#B08D57]">Créneau horaire (Intervalle)</label>
                         <div class="flex items-center gap-2">
                             <div class="relative flex-1">
                                 <span class="absolute left-3 top-3 text-xs text-gray-400">De</span>
@@ -210,7 +210,7 @@
                     </div>
                     
                     <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">Date limite / Date d'exécution</label>
+                        <label class="block text-sm font-semibold text-[#B08D57]">Date limite / Date d'exécution</label>
                         <input type="date" name="task_deadline" class="w-full px-4 py-2.5 bg-purple-50/30 border border-purple-100 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-purple-500 bg-white transition">
                     </div>
                 </div>
