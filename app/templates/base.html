@@ -19,22 +19,73 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        /* Styles appliqués de base quand la classe .dark est active sur le document */
-        html.dark body { background-color: #0f172a !important; color: #f1f5f9 !important; }
-        html.dark .bg-white { background-color: #1e293b !important; color: #f8fafc !important; border-color: #334155 !important; }
-        html.dark .text-gray-900 { color: #f1f5f9 !important; }
-        html.dark .text-gray-800 { color: #e2e8f0 !important; }
-        html.dark .text-gray-500 { color: #94a3b8 !important; }
-        html.dark .border-purple-100, html.dark .border-purple-100\/80, html.dark .border-purple-100\/60 { border-color: #334155 !important; }
-        html.dark header { background-color: #0f172a !important; border-color: #1e293b !important; }
-        html.dark header h2 { color: #c084fc !important; }
-        html.dark #notifDropdown { background-color: #1e293b !important; border-color: #334155 !important; }
-        html.dark #notifDropdown span, html.dark #notifDropdown p { color: #f1f5f9 !important; }
-        html.dark .sidebar-active { background-color: rgba(255, 255, 255, 0.15) !important; color: #e9d5ff !important; font-weight: 600; }
+        /* Dark mode doux */
+        html.dark body {
+            background-color: #312e81 !important;
+            color: #f1f5f9 !important;
+        }
+
+        /* Cartes */
+        html.dark .bg-white {
+            background-color: rgba(30, 27, 75, 0.85) !important;
+            color: #f8fafc !important;
+            border-color: rgba(196, 181, 253, 0.2) !important;
+        }
+
+        /* Textes */
+        html.dark .text-gray-900 {
+            color: #f8fafc !important;
+        }
+
+        html.dark .text-gray-800 {
+            color: #e2e8f0 !important;
+        }
+
+        html.dark .text-gray-500 {
+            color: #c4b5fd !important;
+        }
+
+        html.dark .text-gray-400 {
+            color: #a78bfa !important;
+        }
+
+        /* Bordures */
+        html.dark .border-purple-100,
+        html.dark .border-purple-100\/80,
+        html.dark .border-purple-100\/60 {
+            border-color: rgba(196, 181, 253, 0.2) !important;
+        }
+
+        /* Header */
+        html.dark header {
+            background-color: rgba(30, 27, 75, 0.85) !important;
+            border-color: rgba(196, 181, 253, 0.2) !important;
+        }
+
+        html.dark header h2 {
+            color: #d8b4fe !important;
+        }
+
+        /* Notifications */
+        html.dark #notifDropdown {
+            background-color: #1e1b4b !important;
+            border-color: rgba(196, 181, 253, 0.2) !important;
+        }
+
+        html.dark #notifDropdown span,
+        html.dark #notifDropdown p {
+            color: #f8fafc !important;
+        }
+
+        /* Élément actif sidebar */
+        html.dark .sidebar-active {
+            background-color: rgba(255, 255, 255, 0.12) !important;
+            color: #ede9fe !important;
+        }
     </style>
 </head>
 
-<body class="bg-purple-50 text-gray-800 antialiased font-sans transition-colors duration-200">
+<body class="bg-gradient-to-br from-violet-100 via-purple-200 to-purple-400 dark:from-violet-900 dark:via-purple-800 dark:to-purple-700 min-h-screen">
 
     <div id="sidebarOverlay"
         class="fixed inset-0 bg-black/40 z-40 hidden lg:hidden transition-opacity duration-300">
