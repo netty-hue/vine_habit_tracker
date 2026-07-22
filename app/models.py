@@ -80,6 +80,8 @@ class Notification(db.Model):
     is_read = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     type = db.Column(db.String(50), default="info") # info, success, streak, warning
+    habit_id = db.Column(db.Integer, db.ForeignKey('habits.id'), nullable=True)
+    habit = db.relationship('Habit', backref='notifications')
 
     def __repr__(self):
         return f"<Notification {self.id} for User {self.user_id}>"

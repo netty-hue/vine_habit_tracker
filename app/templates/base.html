@@ -7,7 +7,6 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Configuration de Tailwind pour supporter la classe 'dark'
         tailwind.config = {
             darkMode: 'class'
         }
@@ -15,11 +14,9 @@
 
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        /* Styles appliqués de base quand la classe .dark est active sur le document */
         html.dark body { background-color: #0f172a !important; color: #f1f5f9 !important; }
         html.dark .bg-white { background-color: #1e293b !important; color: #f8fafc !important; border-color: #334155 !important; }
         html.dark .text-gray-900 { color: #f1f5f9 !important; }
@@ -36,44 +33,31 @@
 
 <body class="bg-purple-50 text-gray-800 antialiased font-sans transition-colors duration-200">
 
-    <div id="sidebarOverlay"
-        class="fixed inset-0 bg-black/40 z-40 hidden lg:hidden transition-opacity duration-300">
-    </div>
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/40 z-40 hidden lg:hidden transition-opacity duration-300"></div>
 
     <div class="flex h-screen overflow-hidden">
 
-        <aside id="sidebar"
-            class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-purple-900 to-purple-700 text-white flex flex-col shadow-2xl transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+        <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-purple-900 to-purple-700 text-white flex flex-col shadow-2xl transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
 
             <div class="px-4 py-5 border-b border-purple-600/50 flex flex-col items-center bg-white/5">
-                <img src="{{ url_for('static', filename='image/vine habit.png') }}"
-                    class="w-24 h-24 rounded-full bg-white p-1 shadow-inner object-contain mb-3">
+                <img src="{{ url_for('static', filename='image/vine habit.png') }}" class="w-24 h-24 rounded-full bg-white p-1 shadow-inner object-contain mb-3">
                 <h1 class="text-xl font-black tracking-wider">Vine Habit</h1>
             </div>
 
             <nav id="sidebarNav" class="flex-1 px-4 py-6 space-y-2">
-                <a href="{{ url_for('main.home') }}"
-                    class="flex items-center gap-4 px-4 py-3 rounded-xl transition {% if request.endpoint == 'main.home' %}bg-white/20 text-purple-100 font-bold sidebar-active{% else %}hover:bg-white/10 text-white/90{% endif %}">
+                <a href="{{ url_for('main.home') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl transition {% if request.endpoint == 'main.home' %}bg-white/20 text-purple-100 font-bold sidebar-active{% else %}hover:bg-white/10 text-white/90{% endif %}">
                     <i data-lucide="home" class="w-5 h-5"></i> Accueil
                 </a>
-
-                <a href="{{ url_for('main.goal') }}"
-                    class="flex items-center gap-4 px-4 py-3 rounded-xl transition {% if request.endpoint == 'main.goal' %}bg-white/20 text-purple-100 font-bold sidebar-active{% else %}hover:bg-white/10 text-white/90{% endif %}">
+                <a href="{{ url_for('main.goal') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl transition {% if request.endpoint == 'main.goal' %}bg-white/20 text-purple-100 font-bold sidebar-active{% else %}hover:bg-white/10 text-white/90{% endif %}">
                     <i data-lucide="target" class="w-5 h-5"></i> Objectifs
                 </a>
-
-                <a href="{{ url_for('main.dashboard') }}"
-                    class="flex items-center gap-4 px-4 py-3 rounded-xl transition {% if request.endpoint == 'main.dashboard' %}bg-white/20 text-purple-100 font-bold sidebar-active{% else %}hover:bg-white/10 text-white/90{% endif %}">
+                <a href="{{ url_for('main.dashboard') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl transition {% if request.endpoint == 'main.dashboard' %}bg-white/20 text-purple-100 font-bold sidebar-active{% else %}hover:bg-white/10 text-white/90{% endif %}">
                     <i data-lucide="bar-chart-3" class="w-5 h-5"></i> Tableau de bord
                 </a>
-
-                <a href="{{ url_for('main.list_taches') }}"
-                    class="flex items-center gap-4 px-4 py-3 rounded-xl transition {% if request.endpoint == 'main.list_taches' %}bg-white/20 text-purple-100 font-bold sidebar-active{% else %}hover:bg-white/10 text-white/90{% endif %}">
+                <a href="{{ url_for('main.list_taches') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl transition {% if request.endpoint == 'main.list_taches' %}bg-white/20 text-purple-100 font-bold sidebar-active{% else %}hover:bg-white/10 text-white/90{% endif %}">
                     <i data-lucide="book-open" class="w-5 h-5"></i> Tâches
                 </a>
-
-                <a href="{{ url_for('main.settings') }}"
-                    class="flex items-center gap-4 px-4 py-3 rounded-xl transition {% if request.endpoint == 'main.settings' %}bg-white/20 text-purple-100 font-bold sidebar-active{% else %}hover:bg-white/10 text-white/90{% endif %}">
+                <a href="{{ url_for('main.settings') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl transition {% if request.endpoint == 'main.settings' %}bg-white/20 text-purple-100 font-bold sidebar-active{% else %}hover:bg-white/10 text-white/90{% endif %}">
                     <i data-lucide="settings" class="w-5 h-5"></i> Paramètres
                 </a>
             </nav>
@@ -91,8 +75,7 @@
                 </div>
                 {% endif %}
 
-                <a href="{{ url_for('main.logout') }}"
-                    class="flex justify-center items-center gap-2 bg-purple-600/40 hover:bg-red-600 py-3 rounded-xl font-semibold transition">
+                <a href="{{ url_for('main.logout') }}" class="flex justify-center items-center gap-2 bg-purple-600/40 hover:bg-red-600 py-3 rounded-xl font-semibold transition">
                     <i data-lucide="log-out" class="w-4 h-4"></i> Déconnexion
                 </a>
             </div>
@@ -121,19 +104,20 @@
                         </button>
 
                         <div class="relative">
-                            <button id="notifBell" class="p-2 rounded-xl hover:bg-purple-50 text-purple-700 transition relative">
+                            <button id="notifBell" class="p-2 rounded-xl hover:bg-purple-50 text-purple-700 transition relative focus:outline-none">
                                 <i data-lucide="bell" class="w-5 h-5"></i>
                                 <span id="notifBadge" class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full hidden"></span>
                             </button>
 
-                            <div id="notifDropdown" class="absolute right-0 mt-3 w-80 bg-white border border-purple-100 rounded-2xl shadow-xl z-50 hidden transition-all">
+                            <div id="notifDropdown" class="absolute right-0 mt-3 w-80 sm:w-96 bg-white border border-purple-100 rounded-2xl shadow-xl z-50 hidden transition-all">
                                 <div class="p-4 border-b border-purple-100 flex items-center justify-between">
                                     <span class="font-bold text-gray-900 text-sm flex items-center gap-1.5">
                                         <i data-lucide="bell-ring" class="w-4 h-4 text-purple-600"></i> Notifications
                                     </span>
-                                    <button id="markAllRead" class="text-xs text-purple-600 font-bold hover:underline">Tout effacer</button>
+                                    <button id="markAllRead" class="text-xs text-purple-600 font-bold hover:underline hidden">Tout effacer</button>
                                 </div>
-                                <div id="notifContainer" class="max-h-64 overflow-y-auto divide-y divide-purple-50">
+                                
+                                <div id="notifContainer" class="max-h-80 overflow-y-auto divide-y divide-purple-50">
                                     <p class="text-center py-6 text-xs text-gray-400">Aucune nouvelle notification.</p>
                                 </div>
                             </div>
@@ -166,10 +150,9 @@
     </div>
 
     <script>
-        // Initialisation globale des icônes Lucide
         lucide.createIcons();
 
-        // 1. GESTION DE LA SIDEBAR (PC / Mobile)
+        // 1. GESTION DE LA SIDEBAR
         const sidebar = document.getElementById("sidebar");
         const toggle = document.getElementById("toggleSidebar");
         const overlay = document.getElementById("sidebarOverlay");
@@ -209,7 +192,7 @@
             }
         });
 
-        // 2. LOGIQUE NOTIFICATIONS & THEME SWITCHER
+        // 2. NOTIFICATIONS ET THÈME
         document.addEventListener("DOMContentLoaded", function() {
             const notifBell = document.getElementById('notifBell');
             const notifDropdown = document.getElementById('notifDropdown');
@@ -239,27 +222,60 @@
 
             function loadNotifications() {
                 fetch('/api/notifications')
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) throw new Error(`Code HTTP ${response.status}`);
+                        return response.json();
+                    })
                     .then(data => {
                         if (data.length > 0) {
                             notifBadge.classList.remove('hidden');
+                            if (markAllReadBtn) markAllReadBtn.classList.remove('hidden');
                             notifContainer.innerHTML = '';
+
                             data.forEach(notif => {
                                 const notifEl = document.createElement('div');
-                                notifEl.className = 'p-3 hover:bg-purple-50/50 flex justify-between items-start gap-2 transition cursor-pointer';
+                                notifEl.className = 'p-3 hover:bg-purple-50/50 flex justify-between items-start gap-2 transition';
+
+                                // Configuration du style selon le type (tâche, habitude, info)
+                                let badgeColor = "bg-purple-100 text-purple-700";
+                                let iconName = "bell";
+
+                                if (notif.type === "task") {
+                                    badgeColor = "bg-blue-100 text-blue-700";
+                                    iconName = "check-square";
+                                } else if (notif.type === "habit") {
+                                    badgeColor = "bg-amber-100 text-amber-700";
+                                    iconName = "target";
+                                }
+
+                                // Bloc d'affichage de la raison / motivation ('why')
+                                const whyHtml = notif.why ? `
+                                    <div class="mt-2 p-2 bg-purple-50/80 border-l-2 border-purple-500 rounded-r-lg text-[11px] text-purple-900 font-medium italic">
+                                        💡 WHY : "${notif.why}"
+                                    </div>
+                                ` : '';
+
                                 notifEl.innerHTML = `
                                     <div class="flex-1">
-                                        <p class="text-xs text-gray-800 font-medium">${notif.message}</p>
-                                        <span class="text-[9px] text-gray-400 block mt-1">${notif.created_at}</span>
+                                        <div class="flex items-center gap-1.5 mb-1">
+                                            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold ${badgeColor}">
+                                                <i data-lucide="${iconName}" class="w-3 h-3"></i>
+                                                ${notif.type.toUpperCase()}
+                                            </span>
+                                            <span class="text-[9px] text-gray-400 block ml-auto">${notif.created_at}</span>
+                                        </div>
+                                        <p class="text-xs text-gray-800 font-semibold">${notif.message}</p>
+                                        ${whyHtml}
                                     </div>
-                                    <button class="mark-single-read text-purple-400 hover:text-purple-700" data-id="${notif.id}">
+                                    <button class="mark-single-read text-purple-400 hover:text-purple-700 p-1" data-id="${notif.id}" title="Marquer comme lu">
                                         <i data-lucide="check" class="w-4 h-4"></i>
                                     </button>
                                 `;
                                 notifContainer.appendChild(notifEl);
                             });
+
                             lucide.createIcons();
-                            
+
                             document.querySelectorAll('.mark-single-read').forEach(btn => {
                                 btn.addEventListener('click', function() {
                                     const notifId = this.getAttribute('data-id');
@@ -268,9 +284,11 @@
                             });
                         } else {
                             notifBadge.classList.add('hidden');
+                            if (markAllReadBtn) markAllReadBtn.classList.add('hidden');
                             notifContainer.innerHTML = '<p class="text-center py-6 text-xs text-gray-400">Aucune nouvelle notification.</p>';
                         }
-                    });
+                    })
+                    .catch(err => console.error("Erreur notifications :", err));
             }
 
             function checkUnreadCount() {
@@ -279,11 +297,14 @@
                     .then(data => {
                         if (data.count > 0) {
                             notifBadge.classList.remove('hidden');
+                            if (markAllReadBtn) markAllReadBtn.classList.remove('hidden');
                         } else {
                             notifBadge.classList.add('hidden');
                         }
-                    });
+                    })
+                    .catch(err => console.error("Erreur unread count :", err));
             }
+
             if (notifBell) {
                 checkUnreadCount();
                 setInterval(checkUnreadCount, 30000);
@@ -296,17 +317,17 @@
                             element.remove();
                             loadNotifications();
                         }
-                    });
+                    })
+                    .catch(err => console.error("Erreur marquage lu :", err));
             }
 
             if (markAllReadBtn) {
                 markAllReadBtn.addEventListener('click', function() {
                     fetch('/api/notifications/read-all', { method: 'POST' })
                         .then(response => {
-                            if (response.ok) {
-                                loadNotifications();
-                            }
-                        });
+                            if (response.ok) loadNotifications();
+                        })
+                        .catch(err => console.error("Erreur marquage global :", err));
                 });
             }
 
@@ -314,16 +335,12 @@
                 themeToggleBtn.addEventListener('click', function() {
                     const isDark = htmlEl.classList.toggle('dark');
                     const themeIcon = document.getElementById('themeIcon');
-                    if (isDark) {
-                        themeIcon.setAttribute('data-lucide', 'sun');
-                    } else {
-                        themeIcon.setAttribute('data-lucide', 'moon');
-                    }
+                    themeIcon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
                     lucide.createIcons();
 
                     fetch('/api/theme/toggle', { method: 'POST' })
                         .then(response => response.json())
-                        .catch(err => console.error("Erreur de synchronisation du thème :", err));
+                        .catch(err => console.error("Erreur thème :", err));
                 });
             }
         });

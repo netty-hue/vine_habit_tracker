@@ -387,13 +387,19 @@ def terminer_tache(tache_id):
     if tache.is_completed:
         tache.completed_at = datetime.utcnow()
         flash("Tâche terminée !", "success")
+
+        # NOUVEAU : notification quand une tâche est validée
+        create_notification(
+            current_user.id,
+            f"Tâche terminée : « {tache.title} »",
+            type="success"
+        )
     else:
         tache.completed_at = None
         flash("Tâche remise en cours.", "info")
 
     db.session.commit()
-    
-    # CORRECTION : Redirige sur la page active actuelle (évite le retour sur 'goal')
+
     return redirect(request.referrer or url_for("main.goal"))
 
 @main.route("/tache/<int:tache_id>/supprimer")
@@ -507,7 +513,6 @@ def settings():
 
     return render_template("settings.html")
 
-
 # ---------------- HOME ----------------
 
 @main.route("/home")
@@ -592,36 +597,147 @@ def list_taches():
 
 # ── API NOTIFICATIONS ─────────────────────────────────
 
+# ============================================
+# HELPER : Génère automatiquement les notifications du jour
+# ============================================
+def generate_daily_notifications(user_id):
+    """
+    Génère les notifications automatiques pour :
+    1. Les tâches du jour (non complétées)
+    2. Les rappels de motivation ("why") des habitudes
+    """
+    today = date.today()
+
+    # --- 1. TÂCHES DU JOUR ---
+    todos = TodoItem.query.filter_by(user_id=user_id, is_completed=False).all()
+    for todo in todos:
+        is_for_today = False
+        if todo.deadline and todo.deadline == today:
+            is_for_today = True
+        elif not todo.deadline and todo.created_at and todo.created_at.date() == today:
+            is_for_today = True
+
+        if is_for_today:
+            # Évite les doublons de notification le même jour pour la même tâche
+            existing = (
+                Notification.query.filter_by(user_id=user_id)
+                .filter(Notification.message.like(f"%{todo.title}%"))
+                .filter(db.func.date(Notification.created_at) == today)
+                .first()
+            )
+
+            if not existing:
+                creneau_str = f" ({todo.creneau})" if todo.creneau else ""
+                notif = Notification(
+                    user_id=user_id,
+                    message=f"Tâche du jour{creneau_str} : {todo.title}",
+                    type="task",
+                )
+                db.session.add(notif)
+
+    # --- 2. POURQUOI (WHY) DES HABITUDES ---
+    habits = (
+        Habit.query.filter_by(user_id=user_id)
+        .filter(Habit.why.isnot(None), Habit.why != "")
+        .all()
+    )
+    for habit in habits:
+        existing = (
+            Notification.query.filter_by(user_id=user_id, habit_id=habit.id)
+            .filter(db.func.date(Notification.created_at) == today)
+            .first()
+        )
+
+        if not existing:
+            notif = Notification(
+                user_id=user_id,
+                message=f"Rappel Habitude : {habit.title}",
+                type="habit",
+                habit_id=habit.id,
+            )
+            db.session.add(notif)
+
+    db.session.commit()
+
+# ============================================
+# HELPER 1 : Création manuelle d'une notification (CORRIGÉ)
+# ============================================
+def create_notification(user_id, message, type="info", habit_id=None, **kwargs):
+    """
+    Crée une notification ponctuelle.
+    Accepte 'type' ou 'type_notif' sans faire crasher l'application.
+    """
+    # Si 'type_notif' a été passe dans kwargs au lieu de 'type'
+    if "type_notif" in kwargs:
+        type = kwargs["type_notif"]
+
+    try:
+        notif = Notification(
+            user_id=user_id,
+            message=message,
+            type=type,
+            habit_id=habit_id
+        )
+        db.session.add(notif)
+        db.session.commit()
+        return notif
+    except Exception as e:
+        db.session.rollback()
+        print(f"Erreur création notification : {e}")
+        return None
+
+# ============================================
+# ROUTES NOTIFICATIONS & THEME
+# ============================================
+
 @main.route("/api/notifications", methods=["GET"])
 @login_required
 def get_notifications():
-    # On récupère les 10 dernières notifications non lues
-    notifications = Notification.query.filter_by(user_id=current_user.id, is_read=False)\
-                                      .order_by(Notification.created_at.desc())\
-                                      .limit(10).all()
-    
-    return jsonify([{
-        "id": n.id,
-        "message": n.message,
-        "type": n.type,
-        "created_at": n.created_at.strftime("%d/%m %H:%M")
-    } for n in notifications])
+    # Génère automatiquement les notifications du jour au chargement
+    generate_daily_notifications(current_user.id)
+
+    # Récupère les 10 dernières notifications non lues
+    notifications = (
+        Notification.query.filter_by(user_id=current_user.id, is_read=False)
+        .order_by(Notification.created_at.desc())
+        .limit(10)
+        .all()
+    )
+
+    return jsonify([
+        {
+            "id": n.id,
+            "message": n.message,
+            "type": n.type if n.type else "info",
+            # Récupération sécurisée du 'why' depuis l'habitude
+            "why": n.habit.why if getattr(n, "habit", None) and n.habit else None,
+            "created_at": (
+                n.created_at.strftime("%d/%m %H:%M")
+                if n.created_at
+                else ""
+            ),
+        }
+        for n in notifications
+    ])
 
 
 @main.route("/api/notifications/unread-count", methods=["GET"])
 @login_required
 def get_unread_notif_count():
-    count = Notification.query.filter_by(user_id=current_user.id, is_read=False).count()
+    generate_daily_notifications(current_user.id)
+    count = Notification.query.filter_by(
+        user_id=current_user.id, is_read=False
+    ).count()
     return jsonify({"count": count})
 
 
 @main.route("/api/notifications/read/<int:notif_id>", methods=["POST"])
 @login_required
 def read_notification(notif_id):
-    notification = Notification.query.get_or_404(notif_id)
-    if notification.user_id != current_user.id:
-        return jsonify({"error": "Action non autorisée"}), 403
-    
+    notification = Notification.query.filter_by(
+        id=notif_id, user_id=current_user.id
+    ).first_or_404()
+
     notification.is_read = True
     db.session.commit()
     return jsonify({"status": "success"})
@@ -630,9 +746,10 @@ def read_notification(notif_id):
 @main.route("/api/notifications/read-all", methods=["POST"])
 @login_required
 def read_all_notifications():
-    notifications = Notification.query.filter_by(user_id=current_user.id, is_read=False).all()
-    for notif in notifications:
-        notif.is_read = True
+    Notification.query.filter_by(
+        user_id=current_user.id, is_read=False
+    ).update({"is_read": True}, synchronize_session=False)
+
     db.session.commit()
     return jsonify({"status": "success"})
 
@@ -640,20 +757,6 @@ def read_all_notifications():
 @main.route("/api/theme/toggle", methods=["POST"])
 @login_required
 def toggle_theme():
-    # Change le thème en DB
     current_user.theme = "dark" if current_user.theme == "light" else "light"
     db.session.commit()
     return jsonify({"status": "success", "theme": current_user.theme})
-
-
-# ============================================
-# FONCTION HELPER : Crée des notifications n'importe où
-# ============================================
-def create_notification(user_id, message, type="info"):
-    """
-    Appelle cette fonction n'importe où dans tes routes (ex: lors de la validation d'une tâche ou d'un streak)
-    pour notifier automatiquement ton utilisateur !
-    """
-    notif = Notification(user_id=user_id, message=message, type=type)
-    db.session.add(notif)
-    db.session.commit()
